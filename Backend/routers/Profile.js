@@ -69,7 +69,3 @@ ProfileRouter.get('/api/profile/view/:username', validateAuth, async (req, res) 
     }
 })
 export { ProfileRouter }
-// res.status(400).json({
-//     message: error.message
-// })
-
