@@ -120,8 +120,9 @@ authRouter.patch('/api/auth/password',validateAuth, async (req, res) => {
 })
 authRouter.post('/api/auth/logout',async (req,res) => {
     try {
-        //  const token = req.cookies.token
-         res.cookie('token',' ',{expires: new Date(0)})
+          res.cookie("token", null,{
+        expires:new Date(Date.now())
+    })
          res.status(200).json({
             message:"LogOut successfully"
          })

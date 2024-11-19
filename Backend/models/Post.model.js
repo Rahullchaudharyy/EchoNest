@@ -18,9 +18,13 @@ const PostSchema = new mongoose.Schema({
         default:'https://placehold.co/600x400',
     },
     postBy:{
-        type:mongoose.Schema.Types.ObjectId,
+        userId:{
+            type:mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:true
+        },
+        name: { type: String, required: true },
+        profileUrl: { type: String, required: true }
     },
     likedBy:{
         type:[mongoose.Schema.Types.ObjectId],
@@ -34,6 +38,10 @@ const PostSchema = new mongoose.Schema({
         type:String,
         enum:['private','published'],
         default:'published'
+    },
+    category:{
+        type:String,
+        maxlength:20
     }
 
 },{

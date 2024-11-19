@@ -20,10 +20,8 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
 
     try {
         const user = req.user
-        const { title, content, status } = req.body;
+        const { title, content, status,category } = req.body;
         // console.log(title,content,status)
-        console.log(req.body)
-        console.log(req.file)
         const imageUrl = req.body.imageUrl;
         const imageFile = req.file;
         let cloudinaryResponse = null;
@@ -45,7 +43,12 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
             content,
             imageUrl:cloudinaryResponse?.secure_url || cloudinaryResponse || null,
             status,
-            postBy: user._id
+            postBy: {
+                userId: user._id,
+                name: user.firstName,
+                profileUrl: user.profileUrl
+            },
+            category
         })
 
 
