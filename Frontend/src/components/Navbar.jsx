@@ -8,7 +8,7 @@ const Navbar = () => {
 
    return (
     <div>
-      <nav className="h-[80px] bg-white shadow-sm ">
+      <nav className="h-[80px] bg-white shadow-sm border-b-2">
         <div className=" flex justify-between items-center h-full px-5">
           <div>
             <img className="h-[70px]" src={logo} alt="EchoNest_Logo" />
