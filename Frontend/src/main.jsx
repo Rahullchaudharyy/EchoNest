@@ -7,6 +7,7 @@ import Layout from './Layout.jsx'
 import Home from './components/Home.jsx'
 import Blogs from './components/Blogs.jsx'
 import Auth from './components/Auth.jsx'
+import SpecificBlog from './components/SpecificBlog.jsx'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path:"blogs",
         element:<Blogs/>
+      },
+      {
+        path:'blog/:blogid',
+        element:<SpecificBlog/>
       }
     ]
   }

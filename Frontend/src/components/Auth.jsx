@@ -10,6 +10,7 @@ const Auth = () => {
     const [loading, setloading] = useState(false)
     const navigate = useNavigate()
    const [Name, setName] = useState('')
+   const [Username, setUsername] = useState('')
    const [Email, setEmail] = useState('')
    const [Password, setPassword] = useState('')
    const [ResetingPassword, setResetingPassword] = useState(false)
@@ -37,22 +38,23 @@ const Auth = () => {
     <div className='h-auto w-auto flex'>
         <ToastContainer/>
      
-      <div id='Auth-Left' className='h-full w-[50%] hidden md:flex justify-center items-center flex-col p-6'>
-        <h1 className='text-white text-5xl pb-5 font-semibold text-center'>Open-LMS</h1>
-        <img className='min-h-[300px] animate-float max-h-[400px] min-w-[300px] max-w-[400px]' src="../public/Images/Auth_Left_oBJ.png" alt="" />
-        <h1 className='text-white text-2xl p-6 text-center w-[400px]'>Online Learning Made Easy: Manage Your Resources!</h1>
-        <h1 className='text-white text-md p-6 text-center  w-[350px]'>Empower Your Learning Journey: Manage, Learn, Achieve</h1>
-
-      </div>
+        <div id='Auth-Left' className='h-full w-[50%] hidden md:flex justify-center items-center flex-col p-0 relative'>
+  <img 
+    src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA3L2pvYjE0NDgtYmFja2dyb3VuZC0wNGEteF8xLmpwZw.jpg" 
+    alt="Background" 
+    className='h-screen w-full'
+  />
+</div>
       <div id='Auth-Right' className='h-full w-full md:w-[50%] flex justify-center items-center p-10 md:p-20'>
         {IsSignUp?<div className='flex flex-col gap-9'>
             <div className='flex flex-col justify-center items-center gap-11'>
-            <h1 className='text-center text-3xl font-semibold'>Empower Your Learning Experience: Create Your Account</h1>
-            <button className='p-5 bg-gray-300 rounded-full'><i class="ri-google-fill"></i>Signup with Google</button> 
+            <h1 className='text-center text-3xl font-semibold'>Throw your Blogs article: Create Your Account</h1>
             </div>
 
         <form className='flex flex-col gap-3' onSubmit={HandleSignUp}>
-            <label  htmlFor="Username" className='text-sm'>Name</label>
+            <label  htmlFor="Username" className='text-sm'>Username</label>
+            <input value={Username} onChange={(e)=>setUsername(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Name' />
+            <label  htmlFor="Name" className='text-sm'>Name</label>
             <input value={Name} onChange={(e)=>setName(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Name' />
             <label htmlFor="Email" className='text-sm'>Email</label>
             <input value={Email} onChange={(e)=>setEmail(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Email' />
@@ -64,7 +66,7 @@ const Auth = () => {
 
         </div>:<div className='flex flex-col gap-9'>
             <div className='flex flex-col justify-center items-center gap-11'>
-            <h1 className='text-center text-3xl font-semibold'>Join & Connect the Fastest Growing Online Community</h1>
+            <h1 className='text-center text-3xl font-semibold'>Welcome Back !! Glad you come agian</h1>
             <button className='p-5 bg-gray-300 rounded-full'><i class="ri-google-fill"></i>Signin with Google</button> 
             </div>
 

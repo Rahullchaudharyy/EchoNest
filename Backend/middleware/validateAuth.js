@@ -10,7 +10,6 @@ const validateAuth = async (req,res,next)=>{
         const {token} = cookeis;
         if (!token) {
             throw new Error("Invalid Token !! ");
-            
         }
         const decodedMessage = jwt.verify(token,process.env.JWT_SECRET_KEY)
         const user = await User.findOne({_id:decodedMessage._id})
