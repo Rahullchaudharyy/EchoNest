@@ -130,11 +130,15 @@ ProfileRouter.patch(
         }
     }
 );
-ProfileRouter.get('/api/profile/view/:username', validateAuth, async (req, res) => {
+ProfileRouter.get('/api/profile/view/:usernameOrId', validateAuth, async (req, res) => {
     try {
-        const username = req.params.username
+        const usernameOrId = req.params.usernameOrId
         const FoundUser = await User.find({
-            username
+            // username
+            $or: [
+                { _id: usernameOrId }, // MongoDB will skip invalid ObjectId values automatically
+                { username: usernameOrId }
+              ]
         },
         // {_id:0,password:0,emailId:0,createdAt:0,updatedAt:0}
     ).select('username firstName lastName profileUrl bio posts') 

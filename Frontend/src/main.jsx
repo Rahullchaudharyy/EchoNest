@@ -8,6 +8,7 @@ import Home from './components/Home.jsx'
 import Blogs from './components/Blogs.jsx'
 import Auth from './components/Auth.jsx'
 import SpecificBlog from './components/SpecificBlog.jsx'
+import Profile from './components/Profile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path:'blog/:blogid',
         element:<SpecificBlog/>
+      },
+      {
+        path:'profile/:profileId',
+        element:<Profile/>
       }
     ]
   }
@@ -38,7 +43,6 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router}>
     <App />
-
     </RouterProvider>
   </StrictMode>,
 )

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Blogs = () => {
   const [BlogData, setBlogData] = useState();
@@ -9,7 +10,7 @@ const Blogs = () => {
     try {
       const data = await axios.get("/api/post/posts?page=1&limit=19");
       setBlogData(data.data.data);
-      console.log(BlogData);
+      // console.log(BlogData.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -17,6 +18,8 @@ const Blogs = () => {
 
   useEffect(()=>{
     getData()
+          console.log(BlogData);
+
   },[])
 
   return (
@@ -55,7 +58,7 @@ const Blogs = () => {
 
       <div className="h-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-y-11 gap-x-[7.5] p-4 sm:px-16 gap-6">
       { BlogData?.map((data)=>(
-        <div onClick={(e)=> console.log(data)} className=" rounded-lg shadow-xl  bg-white">
+        <Link key={data._id} to={`/blog/${data._id}`} onClick={(e)=> console.log(data._id)} className=" rounded-lg shadow-xl  bg-white">
           <div
             id="Post Image"
             className=" w-full flex justify-center items-center p-4"
@@ -96,9 +99,9 @@ const Blogs = () => {
               </p>
             </div>
           </div>
-        </div>
+        </Link>
       )) }
-      { BlogData?.map((data)=>(
+      {/* { BlogData?.map((data)=>(
         <div className=" rounded-lg shadow-xl  bg-white">
           <div
             id="Post Image"
@@ -449,11 +452,11 @@ const Blogs = () => {
             </div>
           </div>
         </div>
-      )) }
+      )) } */}
 
       </div>
       {/* <button className="border mb-4 w-[130px] p-2 rounded-xl  hover:bg-black hover:text-white hover:transition-all border-black">Browse more </button> */}
-      <button className="flex justify-center font-medium hover:bg-black px-5 border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto mb-3">Load More</button>
+      <button className="flex justify-center font-medium hover:bg-black px-9 mt-6 border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto mb-3">Load More</button>
     </div>
   );
 };

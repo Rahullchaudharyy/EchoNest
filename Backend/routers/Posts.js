@@ -133,6 +133,7 @@ PostRoute.get('/api/post/view/:postId', validateAuth, async (req, res) => {
         const post = await Post.findOne({
             _id: postid
         })
+        // console.log(post)
 
         if (!post) {
             return res.status(404).json({
