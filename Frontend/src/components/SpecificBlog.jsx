@@ -101,7 +101,7 @@ const SpecificBlog = () => {
           >
             <h1 className="font-bold text-xl">Comments</h1>
            {
-            AllCommentsOfPost && AllCommentsOfPost.map((data)=>(
+            AllCommentsOfPost && AllCommentsOfPost?.map((data)=>(
               <div
               id="SingleCommentAndTheRplies"
               className="h-auto p-3 w-full bg-white"
@@ -109,7 +109,7 @@ const SpecificBlog = () => {
               <div id="UserInfo" className="flex justify-between px-3 items-center gap-1">
                 <div className="flex items-center gap-2">
                   <p className="h-[40px] w-[40px] bg-yellow-300 rounded-full"></p>
-                  <p>{data.comments.map(commentData=>commentData.text)}</p>
+                  <p>{data?.comments?.map(commentData=>commentData.text)}</p>
                 </div>
                 <button>Reply</button>
               </div>

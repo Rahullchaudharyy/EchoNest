@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/UserSlice';
 
 const Auth = () => {
     const [IsSignUp, setIsSignUp] = useState(true)
@@ -11,17 +14,50 @@ const Auth = () => {
     const navigate = useNavigate()
    const [Name, setName] = useState('')
    const [Username, setUsername] = useState('')
-   const [Email, setEmail] = useState('')
-   const [Password, setPassword] = useState('')
+   const [emailId, setemailId] = useState('')
+   const [password, setpassword] = useState('')
    const [ResetingPassword, setResetingPassword] = useState(false)
   const [EmailForReset, setEmailForReset] = useState('')
-   
+   const dispatch = useDispatch();
    const HandleSignUp = async(e)=>{
-  
+    e.preventDefault();
+
+    try {
+      const Response = await axios.post(`/api/auth/signup`,{
+        emailId:emailId,
+        password:password,
+        firstName:Name,
+        username: Username
+      })
+
+      console.log(Response)
+
+      if (Response.status == 201) {
+        setIsSignUp(false)
+      }
+    } catch (error) {
+      toast.error(error.message)
+      console.log(error.message)
+    }
    }
 
    const HandleSignIn = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await axios.post('/api/auth/signin',{
+        emailId:emailId,
+        password:password
+      })
+
+      if (response.status == 201) {
+        // console.log("LoggedIn stuffs", response)
+        dispatch(login(response.data.yourProfile))
+        navigate('/home')
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
 
 };
 
@@ -57,9 +93,9 @@ const Auth = () => {
             <label  htmlFor="Name" className='text-sm'>Name</label>
             <input value={Name} onChange={(e)=>setName(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Name' />
             <label htmlFor="Email" className='text-sm'>Email</label>
-            <input value={Email} onChange={(e)=>setEmail(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Email' />
+            <input value={emailId} onChange={(e)=>setemailId(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Email' />
             <label htmlFor="Username" className='text-sm'>Password</label>
-            <input value={Password} onChange={(e)=>setPassword(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Password' />
+            <input value={password} onChange={(e)=>setpassword(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Password' />
             <span className='flex items-center  gap-4'><input type="checkbox" className='rounded-full h-[20px] w-[20px] ' />  Show the password <button type='submit' className={`bg-purple-500 p-3 ${loading?'cursor-not-allowed bg-purple-400':'cursor-pointer'}  fixed md:right-[4.9rem] right-9 text-white rounded-full mt-3`}>SignUp</button></span> 
         </form>
         <h1 className=''>Already have an account ? <button onClick={()=>setIsSignUp(!IsSignUp)} className={`border-b ${loading?'cursor-not-allowed':'cursor-pointer'} border-b-blue-600 bg-none`}>SignIn</button></h1>
@@ -72,9 +108,9 @@ const Auth = () => {
 
         <form onSubmit={HandleSignIn} className='flex flex-col gap-3' action="">
             <label htmlFor="Email" className='text-sm'>Email</label>
-            <input value={Email} onChange={(e)=>setEmail(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Email' />
+            <input value={emailId} onChange={(e)=>setemailId(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Email' />
             <label htmlFor="Username" className='text-sm'>Password</label>
-            <input value={Password} onChange={(e)=>setPassword(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Password' />
+            <input value={password} onChange={(e)=>setpassword(e.target.value)} className='p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500' type="text" placeholder='Password' />
             <span className='flex items-center  gap-4'><input type="checkbox" className='rounded-full h-[20px] w-[20px] ' />  Show the password <button type='submit' className={`bg-purple-500 p-3 ${loading?'cursor-not-allowed bg-purple-400':'cursor-pointer'}  fixed md:right-[4.9rem] right-9 text-white rounded-full mt-3`}>Signin</button></span>
             <h1 onClick={()=>setResetingPassword(true)} className='text-blue-600 cursor-pointer'>Forgot password ?</h1> 
         </form>

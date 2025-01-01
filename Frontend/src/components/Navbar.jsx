@@ -4,9 +4,21 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import logo from "../assets/EchoNest_Logo.png";
 import { Link } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [menuToggle, setMenuToggle] = useState(false);
+  const {currentUser} = useSelector((state)=>state.user)
+  const menuItems = [
+    { type: "link", text: "Home", to: "/home" },
+    { type: "link", text: "Blogs", to: "/blogs" },
+    { type: "link", text: "Your Blogs", to: "/your-blogs" },
+    { type: "link", text: "Feedback", to: "/your-blogs" },
+    { type: "link", text: "About", to: "/your-blogs" },
+    { type: "link", text: "Profile", to: `profile/${currentUser?._id}` },
+    
+  ];
+  
 
   return (
     <div>
@@ -37,22 +49,20 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {menuToggle && (
           <div className="absolute  md:hidden top-[80px] left-1/2 transform -translate-x-1/2 w-[95%] bg-gray-100 h-auto rounded-lg shadow-md">
-            {/* <div className="flex justify-between items-center h-[80px] bg-gray-100 rounded-t-lg px-5">
-              <div>
-                <img className="h-[70px]" src={logo} alt="EchoNest_Logo" />
-              </div>
-              <div onClick={() => setMenuToggle(!menuToggle)}>
-                <i className="ri-close-line text-2xl cursor-pointer" />
-              </div>
-            </div> */}
+           
 
             <div className="flex flex-col items-center gap-5 p-6">
-              <Link to="/home" className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg">Home</Link>
-              <Link to="/blogs" className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg">Blogs</Link>
-              <Link to="/your-blogs" className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg">Your Blogs</Link>
-              <h2 className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg">Feedback</h2>
-              <h2 className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg">About</h2>
-              <h2 className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg">Profile</h2>
+            {menuItems.map((item, index) =>(
+          <Link
+          onClick={()=>setMenuToggle(!menuToggle)}
+            key={index}
+            to={item.to}
+            className="border-2 font-bold border-black hover:bg-black hover:text-white w-full text-center p-2 rounded-lg"
+          >
+            {item.text}
+          </Link>
+        ) 
+      )}
             </div>
           </div>
         )}

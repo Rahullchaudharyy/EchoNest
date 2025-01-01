@@ -4,11 +4,16 @@ import { authRouter } from './routers/Auth.js';
 import cookieParser from 'cookie-parser';
 import { ProfileRouter } from './routers/Profile.js';
 import { PostRoute } from './routers/Posts.js';
+import cors from 'cors'
 
 
 const app = express();
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors({
+    origin:'http://localhost:5173',
+    Credential:true
+}))
 conectDB().then(()=>{
     app.listen(process.env.PORT,()=>{
         console.log(`🚀 Server is up and running at http://localhost:${process.env.PORT}`);

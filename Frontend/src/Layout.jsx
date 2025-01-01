@@ -1,22 +1,52 @@
 
 
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { login } from "./features/UserSlice";
 
 const Layout = () => {
+  const {isLoggedIn} = useSelector((state)=>state.user)
+  console.log(isLoggedIn)
   const location = useLocation();
-  const hideLayout = location.pathname === "/auth"; // Hide Navbar and Footer on "/auth"
+  const navigate = useNavigate()
+  const hideLayout = location.pathname === "/auth";
+
+  const dispatch = useDispatch()
+    const getProfile  = async () => {
+      try {
+        const response = await axios.get('/api/profile/view',{
+          withCredentials:true
+        })
+
+        // console.log(response)
+  
+        if (response.status == 200) {
+          console.log('User response', response)
+          dispatch(login(response.data))
+          navigate('/home')
+        }
+      } catch (error) {
+        navigate('/auth')
+        console.log(error)
+      }
+    }
+    useEffect(() => {
+      getProfile()
+      if (!isLoggedIn) {
+        navigate('/auth')
+      }
+    }, [])
 
   return (
     <>
-      {/* Render Navbar and Footer only if not on /auth */}
       {!hideLayout && <Navbar />}
       
       <div className="min-h-screen">
-        {/* This is where the nested routes will render */}
         <Outlet />
       </div>
 
