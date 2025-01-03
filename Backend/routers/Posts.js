@@ -20,6 +20,7 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
 
     try {
         const user = req.user
+        console.log(req.file)
         const { title, content, status,category } = req.body;
         // console.log(title,content,status)
         const imageUrl = req.body.imageUrl;
@@ -28,6 +29,7 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
         if (imageUrl && validator.isURL(imageUrl)) {
             cloudinaryResponse = imageUrl;
         } else if (imageFile) {
+            console.log(imageFile)
             const localFilePath = imageFile.path;
             cloudinaryResponse = await UploadOnCloudinary(localFilePath);
             fs.unlinkSync(localFilePath);
@@ -46,7 +48,7 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
             postBy: {
                 userId: user._id,
                 name: user.firstName,
-                profileUrl: user.profileUrl
+                profileUrl: user.profileUrl || null
             },
             category
         })
@@ -233,7 +235,8 @@ PostRoute.post('/api/post/like/:postId', validateAuth, async (req, res) => {
     try {
         const user = req.user;
         const PostId = req.params.postId;
-        const post = await Post.findById(PostId)
+        const post = await Post.findById(PostId);
+        let message ;
 
         if (!post) {
             return res.status(500).json({
@@ -246,6 +249,7 @@ PostRoute.post('/api/post/like/:postId', validateAuth, async (req, res) => {
             let updateQuery;
             updateQuery = { $pull: { likedBy: user._id } };
             const Unlike = await Post.findByIdAndUpdate(post._id, updateQuery, { new: true })
+            message = "Post Unliked successfully"
             if (!Unlike) {
                 return res.status(400).json({
                     message: "Faild To unlike the post"
@@ -253,11 +257,12 @@ PostRoute.post('/api/post/like/:postId', validateAuth, async (req, res) => {
             }
         } else {
             post.likedBy.push(user._id)
+            message = "Post Liked successfully"
         }
 
         await post.save()
         res.status(201).json({
-            message: "Post Liked successfully"
+            message: message
         })
     } catch (error) {
         res.status(400).json({
@@ -324,11 +329,13 @@ PostRoute.post('/api/post/comment/:postId', validateAuth, async (req, res) => {
 
 PostRoute.get('/api/post/:postid/comments', validateAuth, async (req, res) => {
     try {
+        
         const id = req.params.postid
         const post = await Post.findById(id)
         const comments = await Comment.find({
             post: id
-        })
+        }).populate('commentedBy')
+
         res.status(201).json({ message: "All comment on the pst of " + post.title, comments })
 
     } catch (error) {

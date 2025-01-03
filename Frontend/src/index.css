@@ -3,3 +3,6 @@
 @tailwind utilities;
 
 /* Global CSS or Tailwind class */
+html{
+    scroll-behavior: smooth;
+}

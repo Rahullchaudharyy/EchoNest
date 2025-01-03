@@ -30,13 +30,16 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="md:flex hidden justify-between items-center w-[50%] h-full gap-10">
+          <div className="md:flex hidden justify-between items-center  h-full gap-10">
             <Link to={'/home'} className="text-lg hover:text-gray-600">Home</Link>
             <Link to={'/blogs'} className="text-lg hover:text-gray-600">Blogs</Link>
-            <Link to={'/your-blogs'} className="text-lg hover:text-gray-600">Your Blogs</Link>
+            <Link to={'/createblog'} className="text-lg hover:text-gray-600">Create Blog</Link>
             <h2 className="text-lg hover:text-gray-600 cursor-pointer">Feedback</h2>
             <h2 className="text-lg hover:text-gray-600 cursor-pointer">About</h2>
-            <i className="border-2  p-[8px] px-[12px]  hover:bg-black hover:text-white transition-all cursor-pointer justify-center items-center rounded-full border-black  ri-user-line"></i>
+            <Link to={`/profile/${currentUser?._id}`} className="border-2  p-[8px] px-[12px]  hover:bg-black hover:text-white transition-all cursor-pointer justify-center items-center rounded-full border-black">
+            <i className="ri-user-line"></i>
+            
+            </Link>
 
           </div>
 

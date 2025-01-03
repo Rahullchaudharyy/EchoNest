@@ -18,7 +18,7 @@ const Profile = () => {
 
   return (
     <div className="pt-[80px] h-[100vh] w-full flex flex-col  items-center">
-      <div className="w-[90%] h-auto md:h-auto md:p-[70px] md:justify-start flex flex-col md:flex-row md:items-center items-center p-4 rounded-md border bg-[#F9FAFB] ">
+      <div className="w-[90%] gap-[50px] h-auto md:h-auto md:p-[70px] md:justify-start flex flex-col md:flex-row md:items-center items-center p-4 rounded-md border bg-[#F9FAFB] ">
 
         <div className="h-[50%] md:h-[100%]">
         <div

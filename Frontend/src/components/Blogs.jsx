@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addBlog } from "../features/blogSlice";
+import BlogCard from "./BlogCard";
 
 const Blogs = () => {
   const [BlogData, setBlogData] = useState();
@@ -11,7 +12,7 @@ const Blogs = () => {
   const [categories, setcategories] = useState([])
   const dispatch = useDispatch();
   const {blogs} = useSelector((state)=>state.blogs)
-  console.log(blogs)
+  // console.log(blogs)
   const getData = async () => {
     try {
       const data = await axios.get("/api/post/posts?page=1&limit=19");
@@ -35,7 +36,13 @@ const Blogs = () => {
     // console.log(data)
     setBlogData(data);
   }
+  const truncateText = (text, limit) => {
+    const words = text.split(" ");
 
+    return words.length > limit
+      ? `${words.slice(0, limit).join(" ")}... read more`
+      : text;
+  };
   useEffect(()=>{
     getData()
           // console.log(BlogData);
@@ -60,7 +67,7 @@ const Blogs = () => {
           </span>
           {categories.map((data)=>(
             <span onClick={()=>getBlogByCategory(data)} className="cursor-pointer hover:bg-black font-bold border border-black hover:text-white rounded-full px-4 p-2 ">
-            {data}
+            {data }
           </span>
           ))}
        
@@ -69,48 +76,7 @@ const Blogs = () => {
 
       <div className="h-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-y-11 gap-x-[7.5] p-4 sm:px-16 gap-6">
       { BlogData?.map((data)=>(
-        <Link key={data._id} to={`/blog/${data._id}`} onClick={(e)=> console.log(data._id)} className=" rounded-lg shadow-xl  bg-white">
-          <div
-            id="Post Image"
-            className=" w-full flex justify-center items-center p-4"
-          >
-            <img
-              className="rounded-lg hover:scale-105 hover:transition-all object-cover w-full h-full"
-              src={data.imageUrl}
-              alt=""
-            />
-          </div>
-          <div id="Post-Details" className=" w-full p-4 flex flex-col gap-4">
-            <h1 className="text-xl md:text-xl font-bold">
-              {data.title}
-            </h1>
-            <p className="text-sm md:text-base text-gray-500 font-bold">
-              {data.content}
-            </p>
-            <div
-              id="Author"
-              className="flex justify-between items-center flex-wrap gap-2"
-            >
-              <div className="flex items-center gap-2">
-                <img
-                  src={data.postBy.profileUrl}
-                  alt="Author"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <p className="text-gray-500 text-sm md:text-base">
-                  {data.postBy.name}
-                </p>
-                <p className="text-gray-500 text-sm md:text-base">
-                  {
-                  new Date(data.createdAt).toLocaleString()}
-                </p>
-              </div>
-              <p className="text-blue-500 border border-blue-500 rounded-full bg-blue-100 px-2 py-1 text-xs md:text-sm">
-                Category
-              </p>
-            </div>
-          </div>
-        </Link>
+        <BlogCard key={data._id} _id={data._id} imageUrl={data.imageUrl} title={data.title} name={data.postBy.name} createdAt={data.createdAt} Category={data.category} content={data.content}/>
       )) }
      
 
@@ -120,5 +86,4 @@ const Blogs = () => {
     </div>
   );
 };
-
 export default Blogs;

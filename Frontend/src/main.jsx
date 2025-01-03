@@ -11,6 +11,7 @@ import SpecificBlog from './components/SpecificBlog.jsx'
 import Profile from './components/Profile.jsx'
 import {Provider} from 'react-redux'
 import store from './store/store.js'
+import CreateBlog from './components/CreateBlog.jsx'
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,12 @@ const router = createBrowserRouter([
       {
         path:'profile/:profileId',
         element:<Profile/>
-      }
+      },
+      {
+        path:'createblog',
+        element:<CreateBlog/>
+      },
+
     ]
   }
 ])

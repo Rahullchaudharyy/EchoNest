@@ -24,7 +24,7 @@ const PostSchema = new mongoose.Schema({
         required:true
         },
         name: { type: String, required: true },
-        profileUrl: { type: String, required: true }
+        profileUrl: { type: String, required: false }
     },
     likedBy:{
         type:[mongoose.Schema.Types.ObjectId],

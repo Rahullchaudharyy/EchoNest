@@ -8,25 +8,24 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { login } from "./features/UserSlice";
+import { addBlog } from "./features/blogSlice";
+import { addcategory } from "./features/CategorySlice";
 
 const Layout = () => {
   const {isLoggedIn} = useSelector((state)=>state.user)
-  console.log(isLoggedIn)
   const location = useLocation();
   const navigate = useNavigate()
   const hideLayout = location.pathname === "/auth";
+  const dispatch= useDispatch()
 
-  const dispatch = useDispatch()
     const getProfile  = async () => {
       try {
         const response = await axios.get('/api/profile/view',{
           withCredentials:true
         })
 
-        // console.log(response)
   
         if (response.status == 200) {
-          console.log('User response', response)
           dispatch(login(response.data))
           navigate('/home')
         }
@@ -35,11 +34,23 @@ const Layout = () => {
         console.log(error)
       }
     }
+    const getData = async () => {
+      try {
+        const data = await axios.get("/api/post/posts?page=1&limit=19");
+        const dataForCategory = await axios.get('/api/post/posts');
+       const Category =  dataForCategory?.data?.data?.map((data)=>data.category)
+       dispatch(addcategory(Category))
+      dispatch(addBlog(data?.data?.data))
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
     useEffect(() => {
       getProfile()
+      getData()
       if (!isLoggedIn) {
         navigate('/auth')
-      }
+      } 
     }, [])
 
   return (
