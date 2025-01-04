@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { truncateText } from "../utils/TextOverflow";
 import BlogCard from "./BlogCard";
 import { getProfile } from "../utils/GetProfile";
+import { SetLoading } from "../features/LoadingSlice";
+import Loader from "./Loader";
 
 const Profile = () => {
   const { profileId } = useParams();
   const [user, setUser] = useState(null); // Start with null instead of undefined
   const [myBlogs, setMyBlogs] = useState([]);
   const navigate = useNavigate();
-  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { blogs } = useSelector((state) => state.blogs);
+
+  const { loading } = useSelector((state) => state.loading);
 
   const socialIcons = [
     "ri-facebook-fill",
@@ -24,20 +29,27 @@ const Profile = () => {
 
   const getMyBlogs = async () => {
     try {
+      dispatch(SetLoading(true));
       const response = await axios.get(`/api/posts/${profileId}`, {
         withCredentials: true,
       });
       setMyBlogs(response.data.data);
+      dispatch(SetLoading(false));
     } catch (error) {
+      dispatch(SetLoading(false));
       toast.error(error.message || "Failed to fetch blogs.");
     }
   };
 
   const fetchProfile = async () => {
     try {
+      dispatch(SetLoading(true));
+
       const data = await getProfile(profileId);
       setUser(data?.data[0]); // Use the first user in the data array
+      dispatch(SetLoading(false));
     } catch (error) {
+      dispatch(SetLoading(false));
       toast.error(error.message || "Failed to fetch profile.");
     }
   };
@@ -45,9 +57,12 @@ const Profile = () => {
   useEffect(() => {
     getMyBlogs();
     fetchProfile();
-    console.log(user)
+    console.log(user);
   }, [profileId]); // Depend on profileId to re-fetch if it changes
 
+  if (loading) {
+    <Loader />;
+  }
   return (
     <div className="pt-[80px] h-auto w-full flex flex-col items-center">
       {/* Profile Info */}
@@ -58,18 +73,17 @@ const Profile = () => {
             id="Image"
             className="h-[260px] w-[260px] flex rounded-full border border-gray-300 justify-center items-center"
           >
-           <div className="w-[180px] h-[180px] rounded-full border overflow-hidden">
-  {user?.profileUrl ? (
-    <img
-      className="h-full scale-150 w-full object-cover"
-      src={user.profileUrl}
-      alt="Profile"
-    />
-  ) : (
-    <p className="text-center">Loading...</p>
-  )}
-</div>
-
+            <div className="w-[180px] h-[180px] rounded-full border overflow-hidden">
+              {user?.profileUrl ? (
+                <img
+                  className="h-full scale-150 w-full object-cover"
+                  src={user.profileUrl}
+                  alt="Profile"
+                />
+              ) : (
+                <p className="text-center">Loading...</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -79,7 +93,9 @@ const Profile = () => {
             Hey! I'm{" "}
             <span className="font-bold">{user?.firstName || "Loading..."}</span>
           </h1>
-          <p className="text-gray-400 pt-2">{user?.bio || "No bio available."}</p>
+          <p className="text-gray-400 pt-2">
+            {user?.bio || "No bio available."}
+          </p>
 
           {/* Social Icons */}
           <div className="flex gap-4 sm:w-[300px] items-center justify-between p-2 w-full pt-3">

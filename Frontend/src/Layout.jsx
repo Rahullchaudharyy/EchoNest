@@ -32,11 +32,10 @@ const Layout = () => {
   
         if (response.status == 200) {
           dispatch(login(response.data))
-          navigate('/home')
+          // navigate('/home')
           dispatch(SetLoading(false))
         }
       } catch (error) {
-        navigate('/auth')
         console.log(error)
         dispatch(SetLoading(false))
       }
@@ -60,10 +59,23 @@ const Layout = () => {
     useEffect(() => {
       getProfile()
       getData()
-      if (!isLoggedIn) {
-        navigate('/auth')
-      } 
+      
     }, [])
+
+    useEffect(() => {
+      const checkAuthAndRedirect = async () => {
+        await getProfile(); // Ensure user is authenticated
+  
+        // Redirect to /auth if user is not logged in, unless already on /auth
+        if (!isLoggedIn && location.pathname !== "/auth") {
+          navigate("/auth");
+        }
+      };
+  
+      checkAuthAndRedirect();
+      getData(); // Load other app data
+    }, [isLoggedIn, location.pathname]);
+    
 
   return (
     <>

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Link, useAsyncError, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 const SpecificBlog = () => {
   const [CommentAdded, setCommentAdded] = useState(false)
   const [TotalLikesOnPost, setTotalLikesOnPost] = useState(0)
@@ -152,10 +153,8 @@ const SpecificBlog = () => {
   return (
     <>
       {!Blog ? (
-        <div>
-          <h1>Loading...</h1>
-        </div>
-      ) : (
+        <Loader/>
+) : (
         <div className="min-h-screen w-full pt-[90px] overflow-y-scroll flex justify-center items-center flex-col gap-6 p-5 bg-gray-50">
           <button className="bg-blue-200 p-2 rounded-full text-blue-500 text-sm md:text-base">
             {Blog.category}
