@@ -11,6 +11,8 @@ const BlogCard = ({
   name,
   createdAt,
   Category,
+  showProfile,
+  postby
 }) => {
   return (
     <div>
@@ -18,7 +20,7 @@ const BlogCard = ({
         key={_id}
         to={`/blog/${_id}`}
         // onClick={(e) => console.log(_id)}
-        className=" rounded-lg shadow-xl border bg-white "
+        className={ `rounded-lg col-span-1 shadow-xl border bg-white `}
       >
         <div
           id="Post Image"
@@ -40,12 +42,15 @@ const BlogCard = ({
             className="flex justify-between items-center flex-wrap gap-2"
           >
             <div className="flex items-center gap-2">
-              <img
+              {showProfile&&<>
+              
+                <img
                 src={profileUrl}
                 alt="Author"
                 className="w-8 h-8 rounded-full object-cover"
               />
-              <p className="text-gray-500 text-sm md:text-base">{name}</p>
+              <Link to={`/profile/${ postby }`} className="text-gray-500 text-sm md:text-base">{name}</Link>
+              </>}
               <p className="text-gray-500 text-sm md:text-base">
                 {new Date(createdAt).toLocaleString()}
               </p>

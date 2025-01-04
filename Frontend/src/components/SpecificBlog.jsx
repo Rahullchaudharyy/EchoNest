@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useAsyncError, useParams } from "react-router-dom";
+import { Link, useAsyncError, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 const SpecificBlog = () => {
@@ -20,7 +20,6 @@ const SpecificBlog = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
 
-  console.log(Blog);
   const handleLike = async (postId) => {
     try {
       const response = await axios.post(
@@ -50,7 +49,6 @@ const SpecificBlog = () => {
   const handleDropdownToggle = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
-  // const {currentUser} = useSelector((state)=>state.user)
   const getBlogs = async () => {
     try {
       const Response = await axios.get(`/api/post/view/${blogid}`);
@@ -64,13 +62,9 @@ const SpecificBlog = () => {
     try {
       const AllComments = await axios.get(`/api/post/${blogid}/comments`);
 
-      console.log("all comments on this post", AllComments.data.comments);
       setTotalComment(AllComments.data.comments.length)
-      // console.log("CommentBy", AllCommentBy.data.data[0]);
 
-      // Update the state with the fetched comments
-      setAllCommentsOfPost(AllComments?.data?.comments); // Use comments directly, not AllComments.data.data
-      // console.log("getAllCommetns", AllCommentsOfPost);
+      setAllCommentsOfPost(AllComments?.data?.comments); 
     } catch (error) {
       console.log(error);
     }
@@ -163,16 +157,13 @@ const SpecificBlog = () => {
         </div>
       ) : (
         <div className="min-h-screen w-full pt-[90px] overflow-y-scroll flex justify-center items-center flex-col gap-6 p-5 bg-gray-50">
-          {/* Category Button */}
           <button className="bg-blue-200 p-2 rounded-full text-blue-500 text-sm md:text-base">
             {Blog.category}
           </button>
-          {/* Blog Title */}
           <h1 className="text-center text-xl font-bold md:text-4xl text-gray-800">
             {Blog.title}
           </h1>
 
-          {/* Author Info */}
           <div
             id="Author"
             className="flex justify-between items-center flex-wrap gap-4 text-gray-500"
@@ -183,7 +174,7 @@ const SpecificBlog = () => {
                 alt="Author"
                 className="w-10 h-10 rounded-full object-cover"
               />
-              <p className="text-sm md:text-base">{Blog.postBy.name}</p>
+              <Link to={`/profile/${Blog.postBy?.userId}`} className="text-sm md:text-base cursor-pointer">{Blog.postBy.name}</Link>
               <p className="text-sm md:text-base">
                 {Blog.createdAt
                   ? new Date(Blog.createdAt).toDateString()
@@ -191,7 +182,6 @@ const SpecificBlog = () => {
               </p>
             </div>
           </div>
-          {/* Blog Image */}
           <div className="w-[80%]  flex justify-center my-6">
             <div
               id="Image"

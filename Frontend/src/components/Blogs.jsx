@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addBlog } from "../features/blogSlice";
 import BlogCard from "./BlogCard";
+import { SetLoading } from "../features/LoadingSlice";
 
 const Blogs = () => {
   const [BlogData, setBlogData] = useState();
@@ -12,9 +13,12 @@ const Blogs = () => {
   const [categories, setcategories] = useState([])
   const dispatch = useDispatch();
   const {blogs} = useSelector((state)=>state.blogs)
+    const { loading } = useSelector((state)=>state.loading);
+  
   // console.log(blogs)
   const getData = async () => {
     try {
+      dispatch(SetLoading(true))
       const data = await axios.get("/api/post/posts?page=1&limit=19");
       const dataForCategory = await axios.get('/api/post/posts');
       // console.log(dataForCategory)
@@ -23,11 +27,13 @@ const Blogs = () => {
     dispatch(addBlog(data?.data?.data))
       setcategories(Category)
       setBlogData(data.data.data);
+      dispatch(SetLoading(false))
 
       
 
       // console.log(BlogData.data);
     } catch (error) {
+      dispatch(SetLoading(false))
       console.log(error.message);
     }
   };
@@ -45,14 +51,16 @@ const Blogs = () => {
   };
   useEffect(()=>{
     getData()
-          // console.log(BlogData);
-
   },[])
+
+  if (loading) {
+    return <>Loading...</>
+  }
 
   return (
     <div className="min-h-screen flex pt-[90px]  justify-start items-center flex-col">
       <div className="flex flex-col justify-start items-center mt-4">
-        <h1 className="text-[30px] font-bold text-center">
+        <h1 className="text-[46px] font-bold text-center">
           Browse By Category
         </h1>
         <h3 className="text-gray-500 text-center">
@@ -61,12 +69,12 @@ const Blogs = () => {
         <div className="flex flex-wrap p-4 gap-4 justify-center items-center">
           <span
             onClick={getData}
-            className=" hover:bg-black font-bold border border-black hover:text-white rounded-full px-4 p-2 "
+            className=" hover:bg-black ease-in duration-200 cursor-pointer font-bold border border-black hover:text-white rounded-full px-4 p-2 "
           >
             All
           </span>
-          {categories.map((data)=>(
-            <span onClick={()=>getBlogByCategory(data)} className="cursor-pointer hover:bg-black font-bold border border-black hover:text-white rounded-full px-4 p-2 ">
+          {categories.map((data,index)=>(
+            <span onClick={()=>getBlogByCategory(data)} className={`${index > 5 ?'hidden':''} cursor-pointer hover:bg-black ease-in duration-200 font-bold border border-black hover:text-white rounded-full px-4 p-2 `}>
             {data }
           </span>
           ))}
@@ -76,7 +84,7 @@ const Blogs = () => {
 
       <div className="h-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full gap-y-11 gap-x-[7.5] p-4 sm:px-16 gap-6">
       { BlogData?.map((data)=>(
-        <BlogCard key={data._id} _id={data._id} imageUrl={data.imageUrl} title={data.title} name={data.postBy.name} createdAt={data.createdAt} Category={data.category} content={data.content}/>
+        <BlogCard showProfile={true} key={data._id} _id={data._id} imageUrl={data.imageUrl} postby={data.postBy.userId} title={data.title} name={data.postBy.name} createdAt={data.createdAt} Category={data.category} profileUrl={data?.postBy?.profileUrl} content={data.content}/>
       )) }
      
 

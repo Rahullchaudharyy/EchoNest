@@ -8,10 +8,12 @@ import Home from './components/Home.jsx'
 import Blogs from './components/Blogs.jsx'
 import Auth from './components/Auth.jsx'
 import SpecificBlog from './components/SpecificBlog.jsx'
-import Profile from './components/Profile.jsx'
 import {Provider} from 'react-redux'
 import store from './store/store.js'
 import CreateBlog from './components/CreateBlog.jsx'
+import EditProfile from './components/EditProfile.jsx'
+import MyProfile from './components/MyProfile.jsx'
+import Profile from './components/Profile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -35,12 +37,20 @@ const router = createBrowserRouter([
         element:<SpecificBlog/>
       },
       {
-        path:'profile/:profileId',
-        element:<Profile/>
+        path:'myProfile',
+        element:<MyProfile/>
       },
       {
         path:'createblog',
         element:<CreateBlog/>
+      },
+      {
+        path:'editprofile',
+        element:<EditProfile/>
+      },
+      {
+        path:'profile/:profileId',
+        element:<Profile/>
       },
 
     ]

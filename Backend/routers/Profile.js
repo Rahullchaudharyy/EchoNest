@@ -90,32 +90,33 @@ ProfileRouter.patch(
                 if (uploadResult && uploadResult.secure_url) {
                     cloudinaryResponse = uploadResult.secure_url;
                 }
-
                 fs.unlinkSync(localFilePath); 
             }
-
             // Update user in the database
             const updatedUser = await User.findByIdAndUpdate(
                 user._id,
                 {
                     firstName: data?.firstName,
                     lastName: data?.lastName,
-                    profileUrl: cloudinaryResponse || null, 
+                    profileUrl: cloudinaryResponse || user.profileUrl, // Retain existing URL if no new one is provided
                     bio: data?.bio,
                 },
-                { new: true } 
+                { new: true }
             );
 
-            await Post.updateMany(
-                {
-                    "postBy.userId": user._id, 
-                },
-                {
-                    $set: {
-                        "postBy.profileUrl": cloudinaryResponse || null, // Update the profile URL
+            // Update profile URL in posts only if there is a new URL
+            if (cloudinaryResponse) {
+                await Post.updateMany(
+                    {
+                        "postBy.userId": user._id,
                     },
-                }
-            );
+                    {
+                        $set: {
+                            "postBy.profileUrl": cloudinaryResponse, // Only update when a new profile URL exists
+                        },
+                    }
+                );
+            }
 
             // Response
             res.status(200).json({
@@ -130,6 +131,7 @@ ProfileRouter.patch(
         }
     }
 );
+
 ProfileRouter.get('/api/profile/view/:usernameOrId', validateAuth, async (req, res) => {
     try {
         const usernameOrId = req.params.usernameOrId
@@ -142,11 +144,14 @@ ProfileRouter.get('/api/profile/view/:usernameOrId', validateAuth, async (req, r
         },
         // {_id:0,password:0,emailId:0,createdAt:0,updatedAt:0}
     ).select('username firstName lastName profileUrl bio posts') 
+
+
         // {_id:0,password:0,emailId:0,createdAt:0,updatedAt:0}
         // Here its shows that what are the field we dont want . so we just write the field name and give it a value of 0 , So thats how it happens , like this = {_id:0}
-        if (!FoundUser) {
+        if (!FoundUser || FoundUser.length <  1) {
             throw new Error("User Not Found !!");
         }
+        
         res.status(200).json({
             message:"User Found",
             data:FoundUser

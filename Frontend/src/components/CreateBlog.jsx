@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BlogCard from "./BlogCard";
 import axios from "axios";
+import { SetLoading } from "../features/LoadingSlice";
 
 const CreateBlog = () => {
   const [title, settitle] = useState("");
@@ -14,7 +15,11 @@ const CreateBlog = () => {
   const {currentUser} = useSelector(state=>state.user)
   const [Ohter, setOhter] = useState(true);
   const url = image ? URL.createObjectURL(image) : "defaul.jpg";
+  const { loading } = useSelector((state)=>state.loading);
+  const dispatch = useDispatch()
+
   const HandleCreateBlog =async (e) => {
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
@@ -26,6 +31,8 @@ const CreateBlog = () => {
 
     e.preventDefault();
     try {
+      dispatch(SetLoading(true))
+
         const response = await axios.post(`/api/post/create`,formData,{
             headers:{
                 "Content-Type":"multipart/form-data"
@@ -34,6 +41,7 @@ const CreateBlog = () => {
         })
 
         if (response.status == 200) {
+          dispatch(SetLoading(false))
             console.log("Post Created")
             settitle('')
             setimage('')
@@ -44,6 +52,7 @@ const CreateBlog = () => {
 
       console.log(e);
     } catch (error) {
+      dispatch(SetLoading(false))
       console.log(error.message);
     }
   };
@@ -68,6 +77,7 @@ const CreateBlog = () => {
               Title
             </label>
             <input
+            required
               type="text"
               id="Title"
               value={title}
@@ -81,6 +91,7 @@ const CreateBlog = () => {
               Content
             </label>
             <textarea
+            required
               id="Content"
               className="w-full p-2 rounded-md border-2 h-[150px] resize-none"
               value={content}
@@ -93,6 +104,7 @@ const CreateBlog = () => {
               Photo
             </label>
             <input
+            required
               id="photo"
               type="file"
               className="block w-full text-sm text-gray-700
@@ -119,6 +131,7 @@ const CreateBlog = () => {
                 value={categoryblog}
                 className="w-full p-2 rounded-md border-2"
                 onChange={(e) => setcategoryblog(e.target.value)}
+                required
               >
                 {category?.map((data) => (
                   <option value={data}>{data}</option>
@@ -129,6 +142,7 @@ const CreateBlog = () => {
               </select>
             ) : (
               <input
+              required
                 type="text"
                 id="Category"
                 value={categoryblog}
@@ -145,6 +159,7 @@ const CreateBlog = () => {
             <div className="flex items-center gap-4 mt-2">
               <label className="flex items-center gap-2">
                 <input
+                required
                   type="radio"
                   name="visibility"
                   value="private"
@@ -155,6 +170,7 @@ const CreateBlog = () => {
               </label>
               <label className="flex items-center gap-2">
                 <input
+                required
                   type="radio"
                   name="visibility"
                   value="published"
@@ -167,8 +183,8 @@ const CreateBlog = () => {
           </div>
         </div>
 
-        <button type="submit" className="flex md:absolute md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:bottom-0 md:left-1/2   justify-center font-medium hover:bg-black px-9 mt-8  border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto ">
-          Upload
+        <button type="submit" className={`flex ${loading ? 'cursor-not-allowed': 'cursor-pointer'} md:absolute md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:bottom-0 md:left-1/2   justify-center font-medium hover:bg-black px-9 mt-8  border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto `}>
+         {loading ? "Uploading" :"Upload"}
         </button>
       </form>
       <div className="max-w-[350px] h-full hidden sm:flex flex-col justify-center items-center p-3 ">

@@ -15,7 +15,7 @@ const Navbar = () => {
     { type: "link", text: "Your Blogs", to: "/your-blogs" },
     { type: "link", text: "Feedback", to: "/your-blogs" },
     { type: "link", text: "About", to: "/your-blogs" },
-    { type: "link", text: "Profile", to: `profile/${currentUser?._id}` },
+    { type: "link", text: "Profile", to: `/myprofile` },
     
   ];
   
@@ -24,7 +24,7 @@ const Navbar = () => {
     <div>
       <nav className="h-[80px] bg-white flex justify-between shadow-sm w-full border-b-2">
         <div className="flex justify-between items-center h-full w-full  px-5">
-          {/* Logo */}
+          
           <div>
             <img className="h-[70px]" src={logo} alt="EchoNest_Logo" />
           </div>
@@ -36,7 +36,7 @@ const Navbar = () => {
             <Link to={'/createblog'} className="text-lg hover:text-gray-600">Create Blog</Link>
             <h2 className="text-lg hover:text-gray-600 cursor-pointer">Feedback</h2>
             <h2 className="text-lg hover:text-gray-600 cursor-pointer">About</h2>
-            <Link to={`/profile/${currentUser?._id}`} className="border-2  p-[8px] px-[12px]  hover:bg-black hover:text-white transition-all cursor-pointer justify-center items-center rounded-full border-black">
+            <Link to={`/myprofile`} className="border-2  p-[8px] px-[12px]  hover:bg-black hover:text-white transition-all cursor-pointer justify-center items-center rounded-full border-black">
             <i className="ri-user-line"></i>
             
             </Link>

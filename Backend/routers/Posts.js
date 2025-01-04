@@ -80,8 +80,9 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
 PostRoute.get('/api/post/myposts', validateAuth, async (req, res) => {
     try {
         const user = req.user;
+        // console.log(user)
         const UserPosts = await Post.find({
-            postBy: user._id
+           "postBy.userId" : user._id
         })
         if (UserPosts.length == 0) {
             throw new Error("You have't created any post yet .")
@@ -326,7 +327,6 @@ PostRoute.post('/api/post/comment/:postId', validateAuth, async (req, res) => {
         })
     }
 })
-
 PostRoute.get('/api/post/:postid/comments', validateAuth, async (req, res) => {
     try {
         
@@ -344,7 +344,6 @@ PostRoute.get('/api/post/:postid/comments', validateAuth, async (req, res) => {
         })
     }
 })
-
 PostRoute.post('/api/post/:postId/reply', validateAuth, async (req, res) => {
     try {
         const user = req.user;
@@ -403,7 +402,6 @@ PostRoute.post('/api/post/:postId/reply', validateAuth, async (req, res) => {
         })
     }
 })
-
 PostRoute.get('/api/post/comment/:commentId/replies', validateAuth, async (req, res) => {
     try {
         const user = req.user
@@ -421,6 +419,32 @@ PostRoute.get('/api/post/comment/:commentId/replies', validateAuth, async (req, 
             message: error.message
         })
     }
+})
+
+PostRoute.get('/api/posts/:userId',async (req,res) => {
+    try {
+        const id = req.params.userId
+        const post = await Post.find({
+            "postBy.userId":id,
+            status:'published'
+        })
+        
+        if (!post || post.length < 1) {
+            return res.status(200).json({
+                message:"User Does not have any post"
+            })
+        }
+
+        res.status(201).json({
+            message:"Post Found",
+            data:post
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message:error.message
+        })
+    }
+    
 })
 PostRoute.patch('/api/post/comment/edit/:commentId', validateAuth, async (req, res) => {
     try {
