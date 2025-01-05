@@ -18,7 +18,6 @@ const validateAuth = async (req,res,next)=>{
             throw new Error("User Not Found");
             
         }
-     
         req.user = user
         next()
     } catch (error) {

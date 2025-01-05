@@ -76,7 +76,12 @@ authRouter.post('/api/auth/signin', async (req, res) => {
 
 
 
-        res.cookie('token', token)
+        res.cookie('token', token, {
+            httpOnly: true, 
+            secure: true,   
+            sameSite: 'None', 
+        });
+        
         res.status(201).json({
             message: `Welcome ${user.firstName} You successfully loggedIn`,
             yourProfile: user
