@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: "*",
+    origin: "https://echonest-01.onrender.com",
     credentials: true,
 }));
 app.use((req, res, next) => {
