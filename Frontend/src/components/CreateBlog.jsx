@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import BlogCard from "./BlogCard";
 import axios from "axios";
 import { SetLoading } from "../features/LoadingSlice";
+import axiosInstence from "../utils/axiosInstance";
 
 const CreateBlog = () => {
   const [title, settitle] = useState("");
@@ -33,7 +34,7 @@ const CreateBlog = () => {
     try {
       dispatch(SetLoading(true))
 
-        const response = await axios.post(`/api/post/create`,formData,{
+        const response = await axiosInstence.post(`/api/post/create`,formData,{
             headers:{
                 "Content-Type":"multipart/form-data"
             },

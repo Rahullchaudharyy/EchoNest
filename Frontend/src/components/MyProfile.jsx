@@ -7,6 +7,7 @@ import BlogCard from "./BlogCard";
 import { useDispatch, useSelector } from "react-redux";
 import { SetLoading } from "../features/LoadingSlice";
 import Loader from "./Loader";
+import axiosInstence from "../utils/axiosInstance";
 
 
 const MyProfile = () => {
@@ -23,7 +24,7 @@ const MyProfile = () => {
   const GetMyBlogs = async () => {
     try {
       dispatch(SetLoading(true))
-      const FetchMyBlogs = await axios.get(
+      const FetchMyBlogs = await axiosInstence.get(
         `/api/post/myposts`,
         {},
         {
@@ -43,7 +44,7 @@ const MyProfile = () => {
 
   const HandleLogOut = async () => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstence.post(
         `/api/auth/logout`,
         {},
         {

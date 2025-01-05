@@ -7,6 +7,7 @@ import { addBlog } from "../features/blogSlice";
 import BlogCard from "./BlogCard";
 import { SetLoading } from "../features/LoadingSlice";
 import Loader from "./Loader";
+import axiosInstence from "../utils/axiosInstance";
 
 const Blogs = () => {
   const [BlogData, setBlogData] = useState();
@@ -20,8 +21,8 @@ const Blogs = () => {
   const getData = async () => {
     try {
       dispatch(SetLoading(true));
-      const data = await axios.get("/api/post/posts?page=1&limit=19");
-      const dataForCategory = await axios.get("/api/post/posts");
+      const data = await axiosInstence.get("/api/post/posts?page=1&limit=19");
+      const dataForCategory = await axiosInstence.get("/api/post/posts");
       // console.log(dataForCategory)
       const Category = dataForCategory?.data?.data?.map(
         (data) => data.category

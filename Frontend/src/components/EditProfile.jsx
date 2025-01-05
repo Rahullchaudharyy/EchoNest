@@ -5,6 +5,7 @@ import { SetLoading } from "../features/LoadingSlice";
 
 
 import { toast,ToastContainer } from "react-toastify";
+import axiosInstence from "../utils/axiosInstance";
 
 const EditProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -39,7 +40,7 @@ const EditProfile = () => {
         formData.append(key, payload[key]);
       });
 
-      const response = await axios.patch(`/api/profile/update`, formData, {
+      const response = await axiosInstence.patch(`/api/profile/update`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -74,7 +75,7 @@ const EditProfile = () => {
         formData.append(key, payload[key]);
       });
 
-      const response = await axios.patch(`/api/profile/update`, formData, {
+      const response = await axiosInstence.patch(`/api/profile/update`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });

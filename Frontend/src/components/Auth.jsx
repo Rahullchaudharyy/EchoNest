@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/userSlice.js";
+import axiosInstence from "../utils/axiosInstance.js";
 
 const Auth = () => {
   const [IsSignUp, setIsSignUp] = useState(true);
@@ -46,7 +47,7 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/auth/signin", {
+      const response = await axiosInstence.post("/api/auth/signin", {
         emailId: emailId,
         password: password,
       });

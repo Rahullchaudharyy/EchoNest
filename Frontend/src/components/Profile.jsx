@@ -8,6 +8,7 @@ import BlogCard from "./BlogCard";
 import { getProfile } from "../utils/GetProfile";
 import { SetLoading } from "../features/LoadingSlice";
 import Loader from "./Loader";
+import axiosInstence from "../utils/axiosInstance";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -30,7 +31,7 @@ const Profile = () => {
   const getMyBlogs = async () => {
     try {
       dispatch(SetLoading(true));
-      const response = await axios.get(`/api/posts/${profileId}`, {
+      const response = await axiosInstence.get(`/api/posts/${profileId}`, {
         withCredentials: true,
       });
       setMyBlogs(response.data.data);

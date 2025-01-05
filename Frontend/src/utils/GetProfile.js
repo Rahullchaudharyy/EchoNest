@@ -1,9 +1,10 @@
 import axios from "axios"
 import { useDispatch } from "react-redux"
+import axiosInstence from "./axiosInstance";
 
 const getProfile  = async (id) => {
     try {
-      const response = await axios.get(`/api/profile/view/${id}`,{
+      const response = await axiosInstence.get(`/api/profile/view/${id}`,{
         withCredentials:true
       })
       const user = response.data;

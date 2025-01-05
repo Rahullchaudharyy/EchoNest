@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import axiosInstence from "../utils/axiosInstance";
 const ReusableForm = ({
     url,
     action,
@@ -26,7 +27,7 @@ const ReusableForm = ({
       });
   
       try {
-        const response = await axios.patch(url, submitData, {
+        const response = await axiosInstence.patch(url, submitData, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });

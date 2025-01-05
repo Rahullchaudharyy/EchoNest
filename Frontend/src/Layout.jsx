@@ -11,6 +11,7 @@ import { login } from "./features/userSlice.js";
 import { addBlog } from "./features/blogSlice";
 import { addcategory } from "./features/CategorySlice";
 import { SetLoading } from "./features/LoadingSlice";
+import axiosInstence from "./utils/axiosInstance.js";
 
 const Layout = () => {
   const {isLoggedIn} = useSelector((state)=>state.user);
@@ -25,7 +26,7 @@ const Layout = () => {
     const getProfile  = async () => {
       try {
         dispatch(SetLoading(true))
-        const response = await axios.get('/api/profile/view',{
+        const response = await axiosInstence.get('/api/profile/view',{
           withCredentials:true
         })
 
@@ -44,8 +45,8 @@ const Layout = () => {
       try {
         dispatch(SetLoading(true))
 
-        const data = await axios.get("/api/post/posts?page=1&limit=19");
-        const dataForCategory = await axios.get('/api/post/posts');
+        const data = await axiosInstence.get("/api/post/posts?page=1&limit=19");
+        const dataForCategory = await axiosInstence.get('/api/post/posts');
        const Category =  dataForCategory?.data?.data?.map((data)=>data.category)
        dispatch(addcategory(Category))
       dispatch(addBlog(data?.data?.data))

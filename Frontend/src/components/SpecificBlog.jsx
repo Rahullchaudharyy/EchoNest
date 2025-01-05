@@ -5,6 +5,7 @@ import { Link, useAsyncError, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import axiosInstence from "../utils/axiosInstance";
 const SpecificBlog = () => {
   const [CommentAdded, setCommentAdded] = useState(false)
   const [TotalLikesOnPost, setTotalLikesOnPost] = useState(0)
@@ -23,7 +24,7 @@ const SpecificBlog = () => {
 
   const handleLike = async (postId) => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstence.post(
         `/api/post/like/${postId}`,
         {},
         {
@@ -52,7 +53,7 @@ const SpecificBlog = () => {
   };
   const getBlogs = async () => {
     try {
-      const Response = await axios.get(`/api/post/view/${blogid}`);
+      const Response = await axiosInstence.get(`/api/post/view/${blogid}`);
       setBlog(Response.data.data);
       // console.log(Response.data.data);
     } catch (error) {
@@ -61,7 +62,7 @@ const SpecificBlog = () => {
   };
   const getAllCommetns = async () => {
     try {
-      const AllComments = await axios.get(`/api/post/${blogid}/comments`);
+      const AllComments = await axiosInstence.get(`/api/post/${blogid}/comments`);
 
       setTotalComment(AllComments.data.comments.length)
 
@@ -72,7 +73,7 @@ const SpecificBlog = () => {
   };
   const HandleReply = async (commentIdOfParentComment) => {
     try {
-      const reply = await axios.post(`/api/post/${blogid}/reply`,{
+      const reply = await axiosInstence.post(`/api/post/${blogid}/reply`,{
         ParentCommentId:commentIdOfParentComment,
         text:CommentText
       },{withCredentials:true});
@@ -87,7 +88,7 @@ const SpecificBlog = () => {
   const handleComment = async (e) => {
     e.preventDefault();
     try {
-      const commentOnPost = await axios.post(
+      const commentOnPost = await axiosInstence.post(
         `/api/post/comment/${Blog._id}`,
         {
           text: Comment,
@@ -107,7 +108,7 @@ const SpecificBlog = () => {
   };
   const getTotalLikes = async () => {
     try {
-      const totalLikes = await axios.get(`/api/post/likedby/${blogid}`,{},{
+      const totalLikes = await axiosInstence.get(`/api/post/likedby/${blogid}`,{},{
         withCredentials:true
       })
 
