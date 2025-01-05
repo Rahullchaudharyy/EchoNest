@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../features/UserSlice";
+import { login } from "../features/userSlice.js";
 
 const Auth = () => {
   const [IsSignUp, setIsSignUp] = useState(true);
