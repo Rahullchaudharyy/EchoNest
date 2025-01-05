@@ -1,5 +1,5 @@
 import {configureStore } from '@reduxjs/toolkit'
-import userReducer from '../features/UserSlice'
+import userReducer from '../features/UserSlice.js'
 import blogReducer from '../features/blogSlice'
 import categoryReducer from '../features/CategorySlice'
 import loadingReducer from '../features/LoadingSlice'
