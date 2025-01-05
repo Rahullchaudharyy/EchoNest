@@ -8,7 +8,8 @@ import cors from 'cors'
 
 const allowedOrigins = [
     'https://echo-nest-o5b34pori-rahullchaudharyys-projects.vercel.app',
-    'http://localhost:3000' // Local origin for testing
+    'http://localhost:3000', // Local origin for testing
+    '*'
 ];
 
 const app = express();
