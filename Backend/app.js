@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin:'https://echo-nest-vmkm-rismgaec4-rahullchaudharyys-projects.vercel.app',
     Credential:true
 }))
 conectDB().then(()=>{
