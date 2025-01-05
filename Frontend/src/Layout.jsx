@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { login } from "./features/UserSlice";
+import { login } from "./features/userSlice.js";
 import { addBlog } from "./features/blogSlice";
 import { addcategory } from "./features/CategorySlice";
 import { SetLoading } from "./features/LoadingSlice";
