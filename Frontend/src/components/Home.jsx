@@ -7,11 +7,11 @@ const Home = () => {
   const navigate = useNavigate()
   const {isLoggedIn} = useSelector(state=>state.user)
 
-  useEffect(()=>{
-    if (!isLoggedIn) {
-      navigate('/auth')
-    }
-  },[])
+  // useEffect(()=>{
+  //   if (!isLoggedIn) {
+  //     navigate('/auth')
+  //   }
+  // },[])
   const blogData = [
     {
       title: "Mastering JavaScript ES6+ Features",
@@ -96,7 +96,11 @@ const Home = () => {
                     EchoNest Official<i class="ri-checkbox-circle-fill"></i>
                   </p>
                   <p className="text-gray-500 text-sm md:text-base">
-                    {new Date().toLocaleString()}
+                    {new Date().toLocaleDateString('en-GB',{
+                  day:'2-digit',
+                  month:'short',
+                  year:'numeric'
+                }).replace(/^(\S+)\s(\S+)\s(\S+)$/, '$2 $1, $3')}
                   </p>
                 </div>
               </div>
@@ -137,7 +141,11 @@ const Home = () => {
                           {post.author}
                         </p>
                         <p className="text-gray-500 text-sm md:text-base">
-                          {post.date}
+                          {new Date(post.date).toLocaleDateString('en-GB',{
+                  day:'2-digit',
+                  month:'short',
+                  year:'numeric'
+                }).replace(/^(\S+)\s(\S+)\s(\S+)$/, '$2 $1, $3')}
                         </p>
                       </div>
                     </div>

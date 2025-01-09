@@ -8,6 +8,8 @@ import BlogCard from "./BlogCard";
 import { SetLoading } from "../features/LoadingSlice";
 import Loader from "./Loader";
 import axiosInstence from "../utils/axiosInstance";
+import AuthorCard from "./AuthorCard";
+import SearchComponent from "./SearchComponent";
 
 const Blogs = () => {
   const [BlogData, setBlogData] = useState();
@@ -16,6 +18,7 @@ const Blogs = () => {
   const dispatch = useDispatch();
   const { blogs } = useSelector((state) => state.blogs);
   const { loading } = useSelector((state) => state.loading);
+  const { IsSearching } = useSelector((state) => state.config);
 
   // console.log(blogs)
   const getData = async () => {
@@ -28,9 +31,9 @@ const Blogs = () => {
         (data) => data.category
       );
       //  console.log(Category)
-      dispatch(addBlog(data?.data?.data));
-      setcategories(Category);
-      setBlogData(data.data.data);
+      await dispatch(addBlog(data?.data?.data));
+      await setcategories(Category);
+      await setBlogData(data.data.data);
       dispatch(SetLoading(false));
 
       // console.log(BlogData.data);
@@ -63,6 +66,7 @@ const Blogs = () => {
         <Loader />
       ) : (
         <div className="min-h-screen flex pt-[90px]  justify-start items-center flex-col">
+          {IsSearching&&<SearchComponent/>}
           <div className="flex flex-col justify-start items-center mt-4">
             <h1 className="text-[46px] font-bold text-center">
               Browse By Category
@@ -111,6 +115,18 @@ const Blogs = () => {
           <button className="flex justify-center font-medium hover:bg-black px-9 mt-6 border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto mb-3">
             Load More
           </button>
+
+            {/* top authors  */}
+            <div className="w-[90%] h-[90px] p-2 border-b  flex justify-between items-end mx-1">
+            <h1 className="text-[25px] font-bold">Top Authors</h1>
+            <h1 className="text-[17px] ">All Authors <i class="ri-arrow-right-up-box-line"></i></h1>
+            </div>
+          <div className="w-full h-auto mb-[30px] p-7 gap-6 justify-items-center flex flex-wrap justify-center ">
+
+            <AuthorCard name={"David"} profilephoto={'https://t4.ftcdn.net/jpg/03/83/25/83/360_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg'} bioOrDesignation={'Full-Stack-Developer'} totalPosts={8}/>
+            <AuthorCard name={"David"} profilephoto={'https://t4.ftcdn.net/jpg/03/83/25/83/360_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg'} bioOrDesignation={'Full-Stack-Developer'} totalPosts={8}/>
+            <AuthorCard name={"David"} profilephoto={'https://t4.ftcdn.net/jpg/03/83/25/83/360_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg'} bioOrDesignation={'Full-Stack-Developer'} totalPosts={8}/>
+          </div>
         </div>
       )}
     </>

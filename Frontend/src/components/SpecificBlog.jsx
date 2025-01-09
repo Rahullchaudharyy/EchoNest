@@ -1,18 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useAsyncError, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 import axiosInstence from "../utils/axiosInstance";
+import LogInPopUp from "./LogInPopUp";
+import { SetLoading } from "../features/LoadingSlice";
 const SpecificBlog = () => {
-  const [CommentAdded, setCommentAdded] = useState(false)
-  const [TotalLikesOnPost, setTotalLikesOnPost] = useState(0)
-  const [TotalComment, setTotalComment] = useState(0)
+  const [CommentAdded, setCommentAdded] = useState(false);
+  const [TotalLikesOnPost, setTotalLikesOnPost] = useState(0);
+  const [TotalComment, setTotalComment] = useState(0);
 
   const [IsLiked, setIsLiked] = useState(false);
-  const [CommentText, setCommentText] = useState('')
+  const [CommentText, setCommentText] = useState("");
   const [LikeState, setLikeState] = useState("");
   const [Comment, setComment] = useState("");
   const [ReplyingOf, setReplyingOf] = useState();
@@ -20,10 +22,16 @@ const SpecificBlog = () => {
   const [Blog, setBlog] = useState(null);
   const [AllCommentsOfPost, setAllCommentsOfPost] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, isLoggedIn } = useSelector((state) => state.user);
+  const {loading } = useSelector((state)=>state.loading)
+  const [ShowPopUp, setShowPopUp] = useState(false);
+  const dispatch = useDispatch()
 
   const handleLike = async (postId) => {
     try {
+      if (!isLoggedIn) {
+        setShowPopUp(true);
+      }
       const response = await axiosInstence.post(
         `/api/post/like/${postId}`,
         {},
@@ -53,41 +61,59 @@ const SpecificBlog = () => {
   };
   const getBlogs = async () => {
     try {
+      dispatch(SetLoading(true))
       const Response = await axiosInstence.get(`/api/post/view/${blogid}`);
+
       setBlog(Response.data.data);
-      // console.log(Response.data.data);
+      if (Response.statusText == 'OK' && Blog.length > 0) {
+        dispatch(SetLoading(false))
+      }
+      console.log(Response.data.data);
     } catch (error) {
+      dispatch(SetLoading(false))
       console.log(error.message);
     }
   };
   const getAllCommetns = async () => {
     try {
-      const AllComments = await axiosInstence.get(`/api/post/${blogid}/comments`);
+      const AllComments = await axiosInstence.get(
+        `/api/post/${blogid}/comments`
+      );
 
-      setTotalComment(AllComments.data.comments.length)
+      setTotalComment(AllComments.data.comments.length);
 
-      setAllCommentsOfPost(AllComments?.data?.comments); 
+      setAllCommentsOfPost(AllComments?.data?.comments);
     } catch (error) {
       console.log(error);
     }
   };
   const HandleReply = async (commentIdOfParentComment) => {
     try {
-      const reply = await axiosInstence.post(`/api/post/${blogid}/reply`,{
-        ParentCommentId:commentIdOfParentComment,
-        text:CommentText
-      },{withCredentials:true});
+      if (!isLoggedIn) {
+        setShowPopUp(true);
+      }
+      const reply = await axiosInstence.post(
+        `/api/post/${blogid}/reply`,
+        {
+          ParentCommentId: commentIdOfParentComment,
+          text: CommentText,
+        },
+        { withCredentials: true }
+      );
 
-      toast.info(reply.data.message)
-      setCommentAdded(!CommentAdded)
-      console.log(reply)
+      toast.info(reply.data.message);
+      setCommentAdded(!CommentAdded);
+      console.log(reply);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   const handleComment = async (e) => {
     e.preventDefault();
     try {
+      if (!isLoggedIn) {
+        setShowPopUp(true);
+      }
       const commentOnPost = await axiosInstence.post(
         `/api/post/comment/${Blog._id}`,
         {
@@ -99,7 +125,7 @@ const SpecificBlog = () => {
       );
       toast.info(commentOnPost.data.message);
       setComment("");
-      setCommentAdded(!CommentAdded)
+      setCommentAdded(!CommentAdded);
 
       console.log(commentOnPost);
     } catch (error) {
@@ -108,15 +134,19 @@ const SpecificBlog = () => {
   };
   const getTotalLikes = async () => {
     try {
-      const totalLikes = await axiosInstence.get(`/api/post/likedby/${blogid}`,{},{
-        withCredentials:true
-      })
+      const totalLikes = await axiosInstence.get(
+        `/api/post/likedby/${blogid}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
       setTotalLikesOnPost(totalLikes.data.data.length);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getBlogs();
@@ -131,8 +161,8 @@ const SpecificBlog = () => {
     // console.log(LikeState,IsLiked)
 
     // console.log("getAllCommetns", AllCommentsOfPost);
-  }, [blogid]); 
-  
+  }, [blogid]);
+
   useEffect(() => {
     if (Blog?.likedBy?.includes(currentUser?._id)) {
       setLikeState("Liked");
@@ -147,39 +177,60 @@ const SpecificBlog = () => {
     getAllCommetns();
   }, [CommentAdded]);
 
-  useEffect(()=>{
-    getTotalLikes()
-  },[])
+  useEffect(() => {
+    getTotalLikes();
+  }, []);
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <>
-      {!Blog ? (
-        <Loader/>
-) : (
+      
         <div className="min-h-screen w-full pt-[90px] overflow-y-scroll flex justify-center items-center flex-col gap-6 p-5 bg-gray-50">
+          {ShowPopUp && (
+            <LogInPopUp isOpen={true} onClose={() => setShowPopUp(false)} />
+          )}
           <button className="bg-blue-200 p-2 rounded-full text-blue-500 text-sm md:text-base">
-            {Blog.category}
+            {Blog?.category}
           </button>
           <h1 className="text-center text-xl font-bold md:text-4xl text-gray-800">
-            {Blog.title}
+            {Blog?.title}
           </h1>
+
+          <p className="w-[60%] text-center text-gray-400 font-semibold">Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim corrupti laborum aliquam,  sed fugit illum aliquam!
+          </p>
 
           <div
             id="Author"
             className="flex justify-between items-center flex-wrap gap-4 text-gray-500"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <img
-                src={Blog.postBy.profileUrl}
+                src={Blog?.postBy?.profileUrl}
                 alt="Author"
                 className="w-10 h-10 rounded-full object-cover"
               />
-              <Link to={`/profile/${Blog.postBy?.userId}`} className="text-sm md:text-base cursor-pointer">{Blog.postBy.name}</Link>
-              <p className="text-sm md:text-base">
-                {Blog.createdAt
-                  ? new Date(Blog.createdAt).toDateString()
-                  : "Loading.."}
-              </p>
+              <div className="">
+                <Link
+                  to={`/profile/${Blog?.postBy?.userId}`}
+                  className="text-sm md:text-xl font-bold text-black cursor-pointer"
+                >
+                  {Blog?.postBy?.name}
+                </Link>
+                <p className="text-sm md:text-base">
+                  {Blog?.createdAt
+                    ? new Date(Blog?.createdAt)
+                        .toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                        .replace(/^(\S+)\s(\S+)\s(\S+)$/, "$2 $1, $3")
+                    : "Loading.."}
+                </p>
+              </div>
             </div>
           </div>
           <div className="w-[80%]  flex justify-center my-6">
@@ -188,7 +239,7 @@ const SpecificBlog = () => {
               className="rounded-xl h-[500px] w-full overflow-hidden shadow-lg"
             >
               <img
-                src={Blog.imageUrl}
+                src={Blog?.imageUrl}
                 alt="Blog Visual"
                 className="w-full h-full object-cover  md:h-full"
               />
@@ -197,24 +248,32 @@ const SpecificBlog = () => {
 
           <div className="flex justify-center gap-2">
             <button
-              onClick={(e) => handleLike(Blog._id)}
+              onClick={(e) => handleLike(Blog?._id)}
               className="bg-blue-300 p-[8px] rounded-lg text-center "
             >
-              <i className="ri-thumb-up-line text-blue-500"></i> {LikeState} ({TotalLikesOnPost})
+              <i className="ri-thumb-up-line text-blue-500"></i> {LikeState} (
+              {TotalLikesOnPost})
             </button>
-            <a href="#comment" className="bg-red-300 p-[8px] rounded-lg text-center ">
-              <i className="ri-chat-1-line text-red-500 "></i> Comment ({TotalComment})
+            <a
+              href="#comment"
+              className="bg-red-300 p-[8px] rounded-lg text-center "
+            >
+              <i className="ri-chat-1-line text-red-500 "></i> Comment (
+              {TotalComment})
             </a>
           </div>
 
           {/* Blog Content */}
           <div id="Information" className="px-4 md:px-24 max-w-screen-lg">
             <h2 className="text-lg md:text-xl text-gray-700 mb-4">
-              {Blog.content}
+              {Blog?.content}
             </h2>
           </div>
-        
-          <section id="comment" className="bg-gray-100 py-8 lg:py-16 antialiased">
+
+          <section
+            id="comment"
+            className="bg-gray-100 py-8 lg:py-16 antialiased"
+          >
             <div className="w-[70vw] mx-auto px-4">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg lg:text-2xl font-bold text-black">
@@ -354,89 +413,92 @@ const SpecificBlog = () => {
                 </article>
               ))} */}
               {AllCommentsOfPost &&
-  AllCommentsOfPost.filter((comment) => !comment.parentComment).map((parentComment) => (
-    <article
-      key={parentComment._id}
-      className="p-6 mb-3 text-base bg-white rounded-lg"
-    >
-      <footer className="flex justify-between items-center mb-2">
-        <div className="flex items-center">
-          <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-            <img
-              className="mr-2 w-6 h-6 rounded-full"
-              src={parentComment.commentedBy?.profileUrl || ""}
-              alt={parentComment.commentedBy?.firstName}
-            />
-            {parentComment.commentedBy?.firstName}
-          </p>
-        </div>
-      </footer>
-      <p className="text-gray-500">{parentComment.text}</p>
+                AllCommentsOfPost?.filter(
+                  (comment) => !comment?.parentComment
+                ).map((parentComment) => (
+                  <article
+                    key={parentComment?._id}
+                    className="p-6 mb-3 text-base bg-white rounded-lg"
+                  >
+                    <footer className="flex justify-between items-center mb-2">
+                      <div className="flex items-center">
+                        <Link to={`/profile/${parentComment?.commentedBy?._id}`} className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                          <img
+                            className="mr-2 w-6 h-6 rounded-full"
+                            src={parentComment?.commentedBy?.profileUrl || ""}
+                            alt={parentComment?.commentedBy?.firstName}
+                          />
+                          {parentComment?.commentedBy?.firstName}
+                        </Link>
+                      </div>
+                    </footer>
+                    <p className="text-gray-500">{parentComment?.text}</p>
 
-      {/* Input for replying to parent comment */}
-      {ReplyingOf === parentComment._id ? (
-        <div className="flex gap-2 mt-2">
-          <input
-            value={CommentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            type="text"
-            placeholder={`Reply to ${parentComment.commentedBy.firstName}`}
-            className="p-1 border rounded-md focus:outline-dashed"
-          />
-          <button
-            onClick={() => HandleReply(parentComment._id)}
-            className="text-gray-400 p-1 border rounded-md"
-          >
-            Post Reply
-          </button>
-          <button
-            onClick={() => setReplyingOf("")}
-            className="text-gray-400 p-1 border rounded-md"
-          >
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={() => setReplyingOf(parentComment._id)}
-          className="text-sm text-gray-500 hover:underline font-medium mt-2"
-        >
-          Reply
-        </button>
-      )}
+                    {ReplyingOf === parentComment?._id ? (
+                      <div className="flex gap-2 mt-2">
+                        <input
+                          value={CommentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          type="text"
+                          placeholder={`Reply to ${parentComment?.commentedBy?.firstName}`}
+                          className="p-1 border rounded-md focus:outline-dashed"
+                        />
+                        <button
+                          onClick={() => HandleReply(parentComment?._id)}
+                          className="text-gray-400 p-1 border rounded-md"
+                        >
+                          Post Reply
+                        </button>
+                        <button
+                          onClick={() => setReplyingOf("")}
+                          className="text-gray-400 p-1 border rounded-md"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setReplyingOf(parentComment?._id)}
+                        className="text-sm text-gray-500 hover:underline font-medium mt-2"
+                      >
+                        Reply
+                      </button>
+                    )}
 
-      {/* Nested Replies */}
-      <div className="ml-6 mt-4">
-        {AllCommentsOfPost.filter(
-          (childComment) => childComment.parentComment === parentComment._id
-        ).map((childComment) => (
-          <div
-            key={childComment._id}
-            className="p-4 mb-2 text-sm bg-gray-100 rounded-lg"
-          >
-            <footer className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <p className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
-                  <img
-                    className="mr-2 w-6 h-6 rounded-full"
-                    src={childComment.commentedBy?.profileUrl || ""}
-                    alt={childComment.commentedBy?.firstName}
-                  />
-                  {childComment.commentedBy?.firstName}
-                </p>
-              </div>
-            </footer>
-            <p className="text-gray-500">{childComment.text}</p>
-          </div>
-        ))}
-      </div>
-    </article>
-  ))}
-
+                    {/* Nested Replies */}
+                    <div className="ml-6 mt-4">
+                      {AllCommentsOfPost?.filter(
+                        (childComment) =>
+                          childComment?.parentComment === parentComment?._id
+                      ).map((childComment) => (
+                        <div
+                          key={childComment?._id}
+                          className="p-4 mb-2 text-sm bg-gray-100 rounded-lg"
+                        >
+                          <footer className="flex justify-between items-center mb-2">
+                            <div className="flex items-center">
+                              <Link to={`/profile/${childComment?.commentedBy?._id}`} className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold">
+                                <img
+                                  className="mr-2 w-6 h-6 rounded-full"
+                                  src={
+                                    childComment?.commentedBy?.profileUrl || ""
+                                  }
+                                  alt={childComment?.commentedBy?.firstName}
+                                />
+                                {childComment?.commentedBy?.firstName}
+                              </Link>
+                            </div>
+                          </footer>
+                          <p className="text-gray-500">{childComment?.text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                ))}
             </div>
           </section>
         </div>
-      )}
+
 
       <ToastContainer />
     </>

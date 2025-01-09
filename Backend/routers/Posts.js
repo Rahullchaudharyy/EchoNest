@@ -47,7 +47,7 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
             status,
             postBy: {
                 userId: user._id,
-                name: user.firstName,
+                name: user.firstName + user.lastName || null,
                 profileUrl: user.profileUrl || null
             },
             category
@@ -98,7 +98,7 @@ PostRoute.get('/api/post/myposts', validateAuth, async (req, res) => {
     }
 })
 // All posts feed api with pagination
-PostRoute.get('/api/post/posts', validateAuth, async (req, res) => {
+PostRoute.get('/api/post/posts', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -128,7 +128,7 @@ PostRoute.get('/api/post/posts', validateAuth, async (req, res) => {
         })
     }
 })
-PostRoute.get('/api/post/view/:postId', validateAuth, async (req, res) => {
+PostRoute.get('/api/post/view/:postId', async (req, res) => {
     try {
         const LoggedInUser = req.user;
 
@@ -327,7 +327,7 @@ PostRoute.post('/api/post/comment/:postId', validateAuth, async (req, res) => {
         })
     }
 })
-PostRoute.get('/api/post/:postid/comments', validateAuth, async (req, res) => {
+PostRoute.get('/api/post/:postid/comments'  , async (req, res) => {
     try {
         
         const id = req.params.postid
@@ -510,5 +510,8 @@ PostRoute.delete('/api/post/comment/delete/:commentId', validateAuth, async (req
         })
     }
 })
+
+// Create the top authers api that will fetch the Authors who has created the most blogs in this month or in the Previous month . 
+
 
 export { PostRoute }

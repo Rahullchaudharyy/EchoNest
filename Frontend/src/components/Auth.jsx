@@ -8,11 +8,14 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/userSlice.js";
 import axiosInstence from "../utils/axiosInstance.js";
+import { SetLoading } from "../features/LoadingSlice.js";
+import Loader from "./Loader.jsx";
 
 const Auth = () => {
   const [IsSignUp, setIsSignUp] = useState(true);
-  const [loading, setloading] = useState(false);
+  // const [loading, setloading] = useState(false);
   const { isLoggedIn } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.loading);
   const navigate = useNavigate();
   const [Name, setName] = useState("");
   const [Username, setUsername] = useState("");
@@ -25,19 +28,22 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      const Response = await axios.post(`/api/auth/signup`, {
+      dispatch(SetLoading(true));
+      const Response = await axiosInstence.post(`/api/auth/signup`, {
         emailId: emailId,
         password: password,
         firstName: Name,
         username: Username,
       });
 
-      console.log(Response);
+      // console.log(Response);
 
       if (Response.status == 201) {
         setIsSignUp(false);
+        dispatch(SetLoading(false));
       }
     } catch (error) {
+      dispatch(SetLoading(false));
       toast.error(error.message);
       console.log(error.message);
     }
@@ -47,6 +53,8 @@ const Auth = () => {
     e.preventDefault();
 
     try {
+      dispatch(SetLoading(true))
+
       const response = await axiosInstence.post("/api/auth/signin", {
         emailId: emailId,
         password: password,
@@ -54,10 +62,13 @@ const Auth = () => {
 
       if (response.status == 201) {
         // console.log("LoggedIn stuffs", response)
+        dispatch(SetLoading(false))
+
         dispatch(login(response.data.yourProfile));
         navigate("/home");
       }
     } catch (error) {
+      dispatch(SetLoading(false))
       toast.error(error.message);
     }
   };
@@ -67,6 +78,12 @@ const Auth = () => {
       navigate(-1); // Navigate back to the previous page if logged in
     }
   }, [isLoggedIn]);
+
+  if (loading) {
+    return (
+      <Loader/>
+    )
+  }
 
   const HandleResetPassword = async () => {};
 

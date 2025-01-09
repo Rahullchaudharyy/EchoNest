@@ -37,15 +37,15 @@ const router = createBrowserRouter([
         element:<SpecificBlog/>
       },
       {
-        path:'myProfile',
+        path:'myProfile',  // Show the popup when user is loggedout / Not regieterd
         element:<MyProfile/>
       },
       {
-        path:'createblog',
+        path:'createblog', // Show the popup when user is loggedout / Not regieterd
         element:<CreateBlog/>
       },
       {
-        path:'editprofile',
+        path:'editprofile', // Show the popup when user is loggedout / Not regieterd
         element:<EditProfile/>
       },
       {

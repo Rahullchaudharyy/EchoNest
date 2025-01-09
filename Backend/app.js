@@ -12,9 +12,12 @@ const app = express();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: "https://echonest-01.onrender.com",
+    origin: ["http://localhost:10000", "https://echonest-01.onrender.com"],
     credentials: true,
 }));
+
+
+// ["https://echonest-01.onrender.com","http://192.168.0.105:10000"]
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.path}`);
     next();

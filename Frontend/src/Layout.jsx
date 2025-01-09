@@ -63,19 +63,18 @@ const Layout = () => {
       
     }, [])
 
-    useEffect(() => {
-      const checkAuthAndRedirect = async () => {
-        await getProfile(); // Ensure user is authenticated
+    // useEffect(() => {
+    //   const checkAuthAndRedirect = async () => {
+    //     await getProfile(); 
   
-        // Redirect to /auth if user is not logged in, unless already on /auth
-        if (!isLoggedIn && location.pathname !== "/auth") {
-          navigate("/auth");
-        }
-      };
+    //     if (!isLoggedIn && location.pathname !== "/auth") {
+    //       navigate("/auth");
+    //     }
+    //   };
   
-      checkAuthAndRedirect();
-      getData(); // Load other app data
-    }, [isLoggedIn, location.pathname]);
+    //   checkAuthAndRedirect();
+    //   getData(); 
+    // }, [isLoggedIn, location.pathname]);
     
 
   return (

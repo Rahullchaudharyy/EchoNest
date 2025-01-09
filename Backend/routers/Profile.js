@@ -132,7 +132,7 @@ ProfileRouter.patch(
     }
 );
 
-ProfileRouter.get('/api/profile/view/:usernameOrId', validateAuth, async (req, res) => {
+ProfileRouter.get('/api/profile/view/:usernameOrId',  async (req, res) => {
     try {
         const usernameOrId = req.params.usernameOrId
         const FoundUser = await User.find({
