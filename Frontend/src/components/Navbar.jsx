@@ -1,7 +1,7 @@
 import React, { useDebugValue, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import logo from "../assets/EchoNest_Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile } from "../utils/GetProfile";
 import SearchComponent from "./SearchComponent";
@@ -11,10 +11,12 @@ const Navbar = () => {
   const [menuToggle, setMenuToggle] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const {IsSearching} = useSelector(state=>state.config)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const params = useLocation();
+
 
   const menuItems = [
-    { AuthRequired: false, type: "link", text: "Home", to: "/home" },
+    { AuthRequired: false, type: "link", text: "Home", to: "/" },
     { AuthRequired: false, type: "link", text: "Blogs", to: "/blogs" },
     {
       AuthRequired: true,
@@ -45,7 +47,7 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="md:flex hidden justify-between items-center  h-full gap-10">
-           <button onClick={HandleSearchButton} className="text-lg   text-center border flex justify-center items-center h-[40px] w-[40px] rounded-full hover:bg-black hover:text-white transition-all" ><i className=" p-1  ri-search-line"></i></button>
+           {params.pathname == '/blogs' && <button onClick={HandleSearchButton} className="text-lg   text-center  flex justify-center items-center h-[30px] w-[30px] rounded-full  hover:text-gray-300 transition-all" ><i className=" p-1  ri-search-line"></i></button>}
             {menuItems.map((item, index) => {
               if (!isLoggedIn) {
                 if (!item.AuthRequired) {
@@ -82,8 +84,11 @@ const Navbar = () => {
           {/* Mobile Menu Toggle */}
           <div
             onClick={() => setMenuToggle(!menuToggle)}
-            className="md:hidden flex items-center"
+            className="md:hidden flex gap-3 items-center"
           >
+
+{params.pathname == '/blogs' && <button onClick={HandleSearchButton} className="text-lg   text-center  flex justify-center items-center h-[30px] w-[30px] rounded-full  hover:text-gray-300 transition-all" ><i className=" p-1  ri-search-line"></i></button>}
+
             <i
               className={`ri-${
                 menuToggle ? "close-large-line" : "menu-line"
@@ -94,7 +99,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {menuToggle && (
-          <div className="absolute  md:hidden top-[80px] left-1/2 transform -translate-x-1/2 w-[95%] bg-gray-100 h-auto rounded-lg shadow-md">
+          <div className="absolute   md:hidden top-[80px] left-1/2 transform -translate-x-1/2 w-[95%] bg-gray-100 h-auto rounded-lg shadow-md">
             <div className="flex flex-col items-center gap-5 p-6">
              
               {menuItems.map((item, index) => {

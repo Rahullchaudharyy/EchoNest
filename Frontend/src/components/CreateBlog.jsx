@@ -13,47 +13,46 @@ const CreateBlog = () => {
   const [status, setstatus] = useState("");
   const [categoryblog, setcategoryblog] = useState("");
   const { category } = useSelector((state) => state.category);
-  const {currentUser} = useSelector(state=>state.user)
+  const { currentUser } = useSelector((state) => state.user);
   const [Ohter, setOhter] = useState(true);
   const url = image ? URL.createObjectURL(image) : "defaul.jpg";
-  const { loading } = useSelector((state)=>state.loading);
-  const dispatch = useDispatch()
+  const { loading } = useSelector((state) => state.loading);
+  const dispatch = useDispatch();
 
-  const HandleCreateBlog =async (e) => {
-
+  const HandleCreateBlog = async (e) => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("status", visibility);
     formData.append("category", categoryblog);
     if (image) {
-        formData.append("file", image);
-      }
+      formData.append("file", image);
+    }
 
     e.preventDefault();
     try {
-      dispatch(SetLoading(true))
+      dispatch(SetLoading(true));
 
-        const response = await axiosInstence.post(`/api/post/create`,formData,{
-            headers:{
-                "Content-Type":"multipart/form-data"
-            },
-            withCredentials:true
-        })
+      const response = await axiosInstence.post(`/api/post/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
 
-        if (response.status == 200) {
-          dispatch(SetLoading(false))
-            console.log("Post Created")
-            settitle('')
-            setimage('')
-            setvisibility('')
-            setcontent('')
-            setcategoryblog('')
-        }
+      if (response.status == 200) {
+        dispatch(SetLoading(false));
+        console.log("Post Created");
+        settitle("");
+        setimage("");
+        setvisibility("");
+        setcontent("");
+        setcategoryblog("");
+      }
 
       console.log(e);
     } catch (error) {
-      dispatch(SetLoading(false))
+      dispatch(SetLoading(false));
       console.log(error.message);
     }
   };
@@ -78,7 +77,7 @@ const CreateBlog = () => {
               Title
             </label>
             <input
-            required
+              required
               type="text"
               id="Title"
               value={title}
@@ -92,7 +91,7 @@ const CreateBlog = () => {
               Content
             </label>
             <textarea
-            required
+              required
               id="Content"
               className="w-full p-2 rounded-md border-2 h-[150px] resize-none"
               value={content}
@@ -105,7 +104,7 @@ const CreateBlog = () => {
               Photo
             </label>
             <input
-            required
+              required
               id="photo"
               type="file"
               className="block w-full text-sm text-gray-700
@@ -143,7 +142,7 @@ const CreateBlog = () => {
               </select>
             ) : (
               <input
-              required
+                required
                 type="text"
                 id="Category"
                 value={categoryblog}
@@ -160,7 +159,7 @@ const CreateBlog = () => {
             <div className="flex items-center gap-4 mt-2">
               <label className="flex items-center gap-2">
                 <input
-                required
+                  required
                   type="radio"
                   name="visibility"
                   value="private"
@@ -171,7 +170,7 @@ const CreateBlog = () => {
               </label>
               <label className="flex items-center gap-2">
                 <input
-                required
+                  required
                   type="radio"
                   name="visibility"
                   value="published"
@@ -184,24 +183,30 @@ const CreateBlog = () => {
           </div>
         </div>
 
-        <button type="submit" className={`flex ${loading ? 'cursor-not-allowed': 'cursor-pointer'} md:absolute md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:bottom-0 md:left-1/2   justify-center font-medium hover:bg-black px-9 mt-8  border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto `}>
-         {loading ? "Uploading" :"Upload"}
+        <button
+          type="submit"
+          className={`flex ${
+            loading ? "cursor-not-allowed" : "cursor-pointer"
+          } md:absolute md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:bottom-0 md:left-1/2   justify-center font-medium hover:bg-black px-9 mt-8  border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto `}
+        >
+          {loading ? "Uploading" : "Upload"}
         </button>
       </form>
       <div className="max-w-[350px] h-full hidden sm:flex flex-col justify-center items-center p-3 ">
         <h1 className="text-xl md:text-sm font-bold">Preview Blog Card </h1>
         <BlogCard
-                 profileUrl={currentUser?.profileUrl || "default.jpg"} 
-                 createdAt={new Date().toISOString()} 
-                 _id={"asdf"} 
-                 title={title || "Waiting"} 
-                 name={currentUser?.firstName + " " + currentUser?.lastName} 
-                 imageUrl={image 
-                    ? URL.createObjectURL(image) 
-                    :  "https://placehold.co/600x400?text=Hello+World"}
-                                   content={content || "No content provided."} 
-                 Category={categoryblog||"General"} 
-         
+          profileUrl={currentUser?.profileUrl || "default.jpg"}
+          createdAt={new Date().toISOString()}
+          _id={"asdf"}
+          title={title || "Waiting"}
+          name={currentUser?.firstName + " " + currentUser?.lastName}
+          imageUrl={
+            image
+              ? URL.createObjectURL(image)
+              : "https://placehold.co/600x400?text=Preview+Card"
+          }
+          content={content || "No content provided."}
+          Category={categoryblog || "General"}
         />
       </div>
     </div>

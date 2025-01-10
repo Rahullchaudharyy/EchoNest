@@ -14,6 +14,7 @@ import CreateBlog from './components/CreateBlog.jsx'
 import EditProfile from './components/EditProfile.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import Profile from './components/Profile.jsx'
+import EditBlog from './components/EditBlog.jsx'
 
 const router = createBrowserRouter([
   {
@@ -21,12 +22,12 @@ const router = createBrowserRouter([
     element:<Layout/>,
     children:[
       {
-        path:'auth',
-        element:<Auth/>
+        path:'/',
+        element:<Home/>
       },
       {
-        path:'home',
-        element:<Home/>
+        path:'auth',
+        element:<Auth/>
       },
       {
         path:"blogs",
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
         path:'profile/:profileId',
         element:<Profile/>
       },
+      {
+        path:'post/edit/:id',
+        element:<EditBlog/>
+      }
 
     ]
   }

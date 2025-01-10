@@ -9,12 +9,13 @@ import { SetLoading } from "../features/LoadingSlice";
 import Loader from "./Loader";
 import axiosInstence from "../utils/axiosInstance";
 import NotFound from "./NotFound";
+import { logout } from "../features/userSlice";
 
 const MyProfile = () => {
   const { profileId } = useParams();
   const { loading } = useSelector((state) => state.loading);
   const [ShowMessage, setShowMessage] = useState(false);
-  const [showOptions, setshowOptions] = useState('');
+  const [showOptions, setshowOptions] = useState("");
 
   const dispatch = useDispatch();
 
@@ -22,6 +23,7 @@ const MyProfile = () => {
   const [MyBlogs, setMyBlogs] = useState([]);
   // console.log(profileId);
   const { currentUser } = useSelector((state) => state.user);
+
 
   const GetMyBlogs = async () => {
     try {
@@ -54,8 +56,9 @@ const MyProfile = () => {
           withCredentials: true,
         }
       );
-      if (response.status == 200) {
-        navigate("/auth");
+      if (response.statusText == 'OK') {
+        dispatch(logout())
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
@@ -136,32 +139,33 @@ const MyProfile = () => {
             // onClick={(e) => console.log(_id)}
             className={`rounded-lg relative flex gap-2 h-auto w-[90vw] shadow-xl border bg-white `}
           >
-            {currentUser?._id == data?.postBy.userId &&<div className="absolute top-0 right-0 p-4 z-10">
-              {/* Three dots menu */}
-              <button
-                onClick={() => setshowOptions(data?._id)}
-                className="text-gray-500 absolute right-0 p-4"
-              >
-                &#x22EE; {/* Vertical Ellipsis */}
-              </button>
+            {currentUser?._id == data?.postBy.userId && (
+              <div className="absolute top-0 right-0 p-4 z-10">
+                {/* Three dots menu */}
+                <button
+                  onClick={() => setshowOptions(data?._id)}
+                  className="text-gray-500 absolute right-0 p-4"
+                >
+                  &#x22EE; {/* Vertical Ellipsis */}
+                </button>
 
-              {showOptions == data?._id && (
-                <div className=" bg-white shadow-lg rounded-lg  mt-[40px] w-40">
-                  <button
-                    // onClick={handleEdit}
-                    className="block text-left px-4 py-2 text-sm text-blue-500 hover:bg-gray-100 w-full"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    // onClick={handleDelete}
-                    className="block text-left px-4 py-2 text-red-500 hover:bg-gray-100 w-full"
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-            </div>}
+                {showOptions == data?._id && (
+                  <div className=" bg-white shadow-lg rounded-lg  mt-[40px] w-40">
+                    <Link 
+                    to={`/post/edit/${data?._id}`}
+                    className="block text-left px-4 py-2 text-sm text-blue-500 hover:bg-gray-100 w-full">
+                      Edit
+                    </Link>
+                    <button
+                      // onClick={handleDelete}
+                      className="block text-left px-4 py-2 text-red-500 hover:bg-gray-100 w-full"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
             <div
               id="Post Image"
               className=" w-[40%] h-[350px]  flex justify-center items-center p-4"

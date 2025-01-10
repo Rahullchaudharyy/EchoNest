@@ -60,16 +60,13 @@ const Layout = () => {
     useEffect(() => {
       getProfile()
       getData()
+
       
     }, [])
 
     // useEffect(() => {
     //   const checkAuthAndRedirect = async () => {
-    //     await getProfile(); 
-  
-    //     if (!isLoggedIn && location.pathname !== "/auth") {
-    //       navigate("/auth");
-    //     }
+    //     
     //   };
   
     //   checkAuthAndRedirect();

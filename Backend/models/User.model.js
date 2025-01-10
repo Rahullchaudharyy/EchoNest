@@ -42,11 +42,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         max: 70,
         default: "Hey there! I'm using EchoNest to share my thoughts and ideas. Stay tuned for updates!",
-        // validate(value) {
-        //     if (!filter.isProfane(value)) {
-        //         throw new Error("Your bio contains inappropriate language!");
-        //     }
-        // }
+        
 
     },
     posts: [{
@@ -58,10 +54,7 @@ const UserSchema = new mongoose.Schema({
     timestamps:true
 })
 
-// UserSchema.methods.createEncryption = async function  (plainPassword){
-//     const EncryptedPassword = await bcrypt.hash(plainPassword,10)
-//     return EncryptedPassword
-// }
+
 
 const User = mongoose.model('User', UserSchema)
 export { User }

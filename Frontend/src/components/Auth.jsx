@@ -65,7 +65,7 @@ const Auth = () => {
         dispatch(SetLoading(false))
 
         dispatch(login(response.data.yourProfile));
-        navigate("/home");
+        navigate("/");
       }
     } catch (error) {
       dispatch(SetLoading(false))

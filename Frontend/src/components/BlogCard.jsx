@@ -1,94 +1,4 @@
-// import React from "react";
-// import { truncateText } from "../utils/TextOverflow";
-// import { Link } from "react-router-dom";
 
-// const BlogCard = ({
-//   _id,
-//   imageUrl,
-//   title,
-//   content,
-//   profileUrl,
-//   name,
-//   createdAt,
-//   Category,
-//   showProfile,
-//   postby,
-//   AllowAction,
-// }) => {
-
-//   console.log(AllowAction)
-//   return (
-//     <div>
-//       <Link
-//         key={_id}
-//         to={`/blog/${_id}`}
-//         // onClick={(e) => console.log(_id)}
-//         className={`rounded-lg col-span-1 shadow-xl   `}
-//       >
-//          {AllowAction && 
-//             <div className=" bg-red-500 h-[900px] w-[900px]">
-//               asdfasdf
-//             </div>
-//           }
-//         <div
-//           id="Post Image"
-//           className=" w-full h-[300px] flex justify-center items-center p-4"
-//         >
-//           <img
-//             className="rounded-lg border hover:scale-105 hover:transition-all object-cover w-full h-full"
-//             src={imageUrl}
-//             alt=""
-//           />
-//         </div>
-//         <div id="Post-Details" className="  w-full p-4 flex flex-col gap-4 ">
-          
-//           <h1 className="text-xl md:text-xl font-bold">{title}</h1>
-//           <p className="text-sm md:text-base text-gray-500  break-words">
-//             {truncateText(content, 20)}
-//           </p>
-          
-//           <div
-//             id="Author"
-//             className="flex justify-between items-center flex-wrap gap-2"
-//           >
-//             <div className="flex items-center justify-between w-full gap-2">
-//               {showProfile && (
-//                 <div className="flex gap-2">
-//                   <img
-//                     src={profileUrl}
-//                     alt="Author"
-//                     className="w-6 h-6 rounded-full object-cover"
-//                   />
-//                   <Link
-//                     to={`/profile/${postby}`}
-//                     className="text-gray-500 text-sm md:text-[14px]"
-//                   >
-//                     {name + "•"}
-//                   </Link>
-//                   <p className="text-gray-500 text-sm md:text-[14px]">
-//                     {new Date(createdAt)
-//                       .toLocaleDateString("en-GB", {
-//                         day: "2-digit",
-//                         month: "short",
-//                         year: "numeric",
-//                       })
-//                       .replace(/^(\S+)\s(\S+)\s(\S+)$/, "$2 $1, $3")}
-//                   </p>
-//                 </div>
-//               )}
-//               <p className="text-blue-500 border border-blue-500 rounded-full bg-blue-100 px-2 py-1 text-xs md:text-sm">
-//                 {Category}
-//               </p>
-             
-//             </div>
-//           </div>
-//         </div>
-//       </Link>
-//     </div>
-//   );
-// };
-
-// export default BlogCard;
 
 
 import React, { useState } from "react";
@@ -143,7 +53,7 @@ const BlogCard = ({
         </div>
         <div  id="Post-Details" className="relative w-full p-4 flex flex-col gap-4">
        
-          <Link to={`/blog/${_id}`} className="text-xl md:text-xl font-bold">{title}</Link>
+          <Link to={`/blog/${_id}`} className="text-xl md:text-xl font-bold">{title.split(" ").slice(0,4).join(" ") + '...'}</Link>
           <p className="text-sm md:text-base text-gray-500 break-words">
             {truncateText(content, 20)}
           </p>

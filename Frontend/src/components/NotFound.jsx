@@ -2,7 +2,7 @@ import React from "react";
 
 const NotFound = ({ message = "Page Not Found", subMessage = "The page you're looking for doesn't exist.", onGoBack }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-auto w-[90%] bg-gray-100 p-6 mt-5 mb-6">
+    <div className="flex flex-col items-center justify-center h-auto w-[90%]  p-6 mt-5 mb-6">
       {/* Icon or Illustration */}
       <div className="text-gray-500 text-6xl mb-4">
         <i className="ri-emotion-sad-line"></i>
@@ -25,7 +25,7 @@ const NotFound = ({ message = "Page Not Found", subMessage = "The page you're lo
           </button>
         )}
         <a
-          href="/home"
+          href="/"
           className="border border-gray-300 py-2 px-6 rounded-lg hover:bg-gray-100"
         >
           Home

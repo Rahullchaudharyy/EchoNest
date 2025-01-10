@@ -14,14 +14,14 @@ const PostRoute = express.Router()
 
 const SAFE_USER_DATA = '-_id username firstName lastName profileUrl bio posts';
 
-PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (req, res) => {
+PostRoute.post('/api/post/create', upload.single('file'), validateAuth, async (req, res) => {
     const session = await mongoose.startSession(); // Start a session for transaction
     session.startTransaction();
 
     try {
         const user = req.user
         console.log(req.file)
-        const { title, content, status,category } = req.body;
+        const { title, content, status, category } = req.body;
         // console.log(title,content,status)
         const imageUrl = req.body.imageUrl;
         const imageFile = req.file;
@@ -37,13 +37,13 @@ PostRoute.post('/api/post/create', upload.single('file') ,validateAuth, async (r
 
 
 
-        
-        
+
+
 
         const CreatePost = new Post({
             title,
             content,
-            imageUrl:cloudinaryResponse?.secure_url || cloudinaryResponse || null,
+            imageUrl: cloudinaryResponse?.secure_url || cloudinaryResponse || null,
             status,
             postBy: {
                 userId: user._id,
@@ -82,7 +82,7 @@ PostRoute.get('/api/post/myposts', validateAuth, async (req, res) => {
         const user = req.user;
         // console.log(user)
         const UserPosts = await Post.find({
-           "postBy.userId" : user._id
+            "postBy.userId": user._id
         })
         if (UserPosts.length == 0) {
             throw new Error("You have't created any post yet .")
@@ -173,71 +173,84 @@ PostRoute.get('/api/post/view/:postId', async (req, res) => {
     }
 })
 // edit the post 
-PostRoute.patch('/api/post/edit/:postId', validateAuth, async (req, res) => {
+
+PostRoute.patch('/api/post/edit/:postId', upload.single('file'), validateAuth, async (req, res) => {
     try {
         const user = req.user;
-        const { title, content, imageUrl, status } = req.body
-        // const postId = new mongoose.Types.ObjectId(req.params.postId);
+        const { title, content, status, category } = req.body;
         const postId = req.params.postId;
-        const post = await Post.findOne({
-            postId
-        })
-        // if (user._id !== post._id) {
-        //     return res.status(400).json({
-        //         message:"Invalid Request"
-        //     })
-        // }
-        const AllwedStatus = ['private', 'published']
-        if (!status == 'private' && !status == 'published') {
-            return res.status(400).json({ message: 'status formate is wrong' });
+
+        console.log(req.body)
+
+        if (!title || !content || !status) {
+            return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        // Add the feature to that should validate whaether the fieds are thre or not . 
+        if (!status == 'private') {
+            return res.status(400).json({ message: 'Invalid status value' });
 
+        } else if (!status == 'published') {
+            return res.status(400).json({ message: 'Invalid status value' });
 
+        }
 
         if (!mongoose.Types.ObjectId.isValid(postId)) {
             return res.status(400).json({ message: 'Invalid postId format' });
-
         }
 
-        const PostEdit = await Post.findOne({
-            postBy: user._id,
+        const existingPost = await Post.findOne({
+            "postBy.userId": user._id,
             _id: postId,
         });
-        if (!PostEdit) {
-            return res.status(400).json({ message: 'You do not have any kind of post related to give Credential ' + postId });
+
+        if (!existingPost) {
+            return res.status(404).json({
+                message: 'Post not found or you do not have permission to edit it'
+            });
         }
 
-        await Post.findByIdAndUpdate({
-            _id: PostEdit._id
-        }, {
-            title,
-            content,
-            imageUrl,
-            status
-        })
+        let imageUrl = existingPost.imageUrl;
 
 
-
-        if (!PostEdit) {
-            return res.status(400).json({ message: 'Post Not Found ' });
-
+        if (req.file) {
+            try {
+                const localFilePath = req.file.path;
+                const cloudinaryResponse = await UploadOnCloudinary(localFilePath);
+                fs.unlinkSync(localFilePath);
+                imageUrl = cloudinaryResponse.secure_url;
+            } catch (uploadError) {
+                return res.status(500).json({ message: 'Image upload failed', error: uploadError.message });
+            }
         }
 
-        res.send(PostEdit)
+        const updatedPost = await Post.findByIdAndUpdate(
+            existingPost._id,
+            {
+                title,
+                content,
+                imageUrl,
+                status,
+                category,
+            },
+            { new: true }
+        );
+
+        res.status(200).json({
+            message: 'Post updated successfully',
+            data: updatedPost
+        });
     } catch (error) {
         res.status(400).json({
             message: error.message
-        })
+        });
     }
-})
+});
 PostRoute.post('/api/post/like/:postId', validateAuth, async (req, res) => {
     try {
         const user = req.user;
         const PostId = req.params.postId;
         const post = await Post.findById(PostId);
-        let message ;
+        let message;
 
         if (!post) {
             return res.status(500).json({
@@ -327,9 +340,9 @@ PostRoute.post('/api/post/comment/:postId', validateAuth, async (req, res) => {
         })
     }
 })
-PostRoute.get('/api/post/:postid/comments'  , async (req, res) => {
+PostRoute.get('/api/post/:postid/comments', async (req, res) => {
     try {
-        
+
         const id = req.params.postid
         const post = await Post.findById(id)
         const comments = await Comment.find({
@@ -421,30 +434,30 @@ PostRoute.get('/api/post/comment/:commentId/replies', validateAuth, async (req, 
     }
 })
 
-PostRoute.get('/api/posts/:userId',async (req,res) => {
+PostRoute.get('/api/posts/:userId', async (req, res) => {
     try {
         const id = req.params.userId
         const post = await Post.find({
-            "postBy.userId":id,
-            status:'published'
+            "postBy.userId": id,
+            status: 'published'
         })
-        
+
         if (!post || post.length < 1) {
             return res.status(200).json({
-                message:"User Does not have any post"
+                message: "User Does not have any post"
             })
         }
 
         res.status(201).json({
-            message:"Post Found",
-            data:post
+            message: "Post Found",
+            data: post
         })
     } catch (error) {
         return res.status(400).json({
-            message:error.message
+            message: error.message
         })
     }
-    
+
 })
 PostRoute.patch('/api/post/comment/edit/:commentId', validateAuth, async (req, res) => {
     try {
@@ -497,9 +510,14 @@ PostRoute.delete('/api/post/comment/delete/:commentId', validateAuth, async (req
         }
 
         await Comment.findByIdAndDelete(commentId)
-        await Post.findByIdAndUpdate(comment.post, {
+
+        const post = await Post.findByIdAndUpdate(comment.post, {
             $pull: { comments: commentId }
-        })
+        });
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
 
         res.status(201).json({
             message: "Comment Deleted !! "
@@ -510,8 +528,53 @@ PostRoute.delete('/api/post/comment/delete/:commentId', validateAuth, async (req
         })
     }
 })
+PostRoute.get('/api/authours/top', async (req, res) => {
+    try {
+        const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // Start of current month
+        const startOfNextMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1); // Start of next month
 
-// Create the top authers api that will fetch the Authors who has created the most blogs in this month or in the Previous month . 
+        // Aggregation query
+        const topUsers = await Post.aggregate([
+            // Step 1: Match posts created this month
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startOfMonth,
+                        $lt: startOfNextMonth,
+                    },
+                },
+            },
+            // Step 2: Group by postBy.userId and count the posts
+            {
+                $group: {
+                    _id: "$postBy.userId", // Group by user ID
+                    postCount: { $sum: 1 }, // Count the number of posts
+                },
+            },
+            // Step 3: Sort by post count in descending order
+            {
+                $sort: { postCount: -1 },
+            },
+            // Step 4: Limit to the top 4 users
+            {
+                $limit: 4,
+            },
+        ]);
+
+        // Step 5: Populate user details
+        const populatedUsers = await User.populate(topUsers, { 
+            path: "_id", 
+            select: "username profileUrl firstName lastName emailId bio"
+        });
+
+        res.send(populatedUsers)
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        })
+    }
+})
+
 
 
 export { PostRoute }

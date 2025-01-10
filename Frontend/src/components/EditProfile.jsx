@@ -58,9 +58,8 @@ const EditProfile = () => {
   const handleSubmitPhoto = async (e) => {
     e.preventDefault();
 
-    // Create a payload with only the fields that have changed
     const payload = {};
-    if (file) payload.file = file; // Only include the file if it's selected
+    if (file) payload.file = file; 
 
     if (Object.keys(payload).length === 0) {
         toast.info("No changes to update.")
@@ -95,7 +94,7 @@ const EditProfile = () => {
     <div className="p-6 max-w-lg mx-auto">
         <ToastContainer/>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* First Name */}
+ 
         <div className="flex flex-col gap-2">
           <label htmlFor="firstName" className="font-bold">
             First Name
