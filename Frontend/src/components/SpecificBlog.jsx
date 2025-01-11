@@ -365,7 +365,7 @@ const SpecificBlog = () => {
                         className="inline-flex items-center mr-3 text-sm text-gray-900 font-semibold"
                       >
                         <img
-                          className="mr-2 w-6 h-6 rounded-full"
+                          className="mr-2 w-6 h-6 object-coverx` rounded-full"
                           src={parentComment?.commentedBy?.profileUrl || ""}
                           alt={parentComment?.commentedBy?.firstName}
                         />

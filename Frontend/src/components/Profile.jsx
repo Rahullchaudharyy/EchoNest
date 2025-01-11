@@ -191,12 +191,12 @@ const Profile = () => {
       </div>
 
       {ShowProfile && (
-        <div className="w-[100%] h-[100%] fixed top-0 left-0 bg-black/30 backdrop-blur-sm transition-all duration-300   ">
+        <div className="w-[100%]  h-[100%] fixed top-0 left-0 bg-black/30 backdrop-blur-sm transition-all duration-300   ">
           <i onClick={()=>setShowProfile(!ShowProfile)} className="cursor-pointer absolute right-0 p-3 text-white drop-shadow-xl text-[30px] ri-close-large-line"></i>
 
-          <div className=" absolute z-[100] transform -translate-y-1/2 overflow-hidden -translate-x-1/2 left-1/2 top-1/2 w-[400px] h-[400px] ">
+          <div className=" rounded-md  absolute z-[100] transform -translate-y-1/2 overflow-hidden -translate-x-1/2 left-1/2 top-1/2 w-[400px] h-[400px] ">
             <img
-              className="h-full cursor-pointer scale-150 w-full object-contain"
+              className="h-full rounded-md overflow-hidden cursor-pointer scale-150 w-full object-contain"
               src={user?.profileUrl}
               alt="Profile"
             />

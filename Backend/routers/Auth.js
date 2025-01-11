@@ -8,6 +8,9 @@ import { UploadOnCloudinary } from '../utils/Cloudinary.js'
 import validator from 'validator'
 import fs from 'fs'
 
+import {Resend} from 'resend'
+import sgeMail from '@sendgrid/mail'
+
 const authRouter = express.Router()
 
 authRouter.post('/api/auth/signup', upload.single('file'), async (req, res) => {
@@ -134,6 +137,30 @@ authRouter.post('/api/auth/logout',async (req,res) => {
     } catch (error) {
         res.status(400).json({
             message: error.message
+        })
+    }
+})
+
+authRouter.post('/api/feedback/send',async (req,res) => {
+    try {
+        const {email,name,message} = req.body;
+        const resend = new Resend(process.env.RESEND_API_TOKEN);
+
+       const emailService =  await resend.emails.send({
+            from:"onboarding@resend.dev",
+            to:'geekyyrahul@gmail.com',
+            subject:`feedback for you EchoNest Application from ${name} .`,
+            text:`Hey My email is ${email} , and my message to you is that  :-\ ${message}`
+        })
+
+        console.log(emailService)
+
+        res.status(200).json({
+            message:"feedback Sent !!"
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message:error.message
         })
     }
 })

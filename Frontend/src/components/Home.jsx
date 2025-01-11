@@ -153,6 +153,20 @@ const Home = () => {
                 </div>
               </div>
             ))}
+
+<section className="h-auto w-full gap-y-11 flex gap-x-[7.5] p-4 sm:px-16 gap-6">
+	<div className=" mx-auto flex flex-col items-center justify-center p-4  md:p-10">
+		<h1 className="text-4xl font-bold leading-none text-center">Share Your Thoughts, Effortlessly</h1>
+		<p className="pt-2 pb-8 text-xl font-medium text-center">Experience the simplicity of blogging, where you can express yourself freely without complications.</p>
+		{/* <button className="px-8 py-3 text-lg font-semibold rounded dark:bg-gray-100 dark:text-gray-900">Sign Up Now</button> */}
+    <Link to={isLoggedIn ? '/myprofile' :'/auth'}
+              className="flex justify-center font-medium hover:bg-black px-9 mt-6 border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto mb-3"
+            >
+              {isLoggedIn ? "Go To your Profile" :"Sign Up Now"}
+            </Link>
+	</div>
+</section>
+
           </div>
         </div>
       </div>

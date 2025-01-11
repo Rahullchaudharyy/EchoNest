@@ -15,11 +15,15 @@ import EditProfile from './components/EditProfile.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import Profile from './components/Profile.jsx'
 import EditBlog from './components/EditBlog.jsx'
+import NotFound from './components/NotFound.jsx'
+import Feedback from './components/FeedBack.jsx'
+import About from './components/About.jsx'
 
 const router = createBrowserRouter([
   {
     path:'/',
     element:<Layout/>,
+    errorElement:<NotFound message='Page Not Found' subMessage='Opps ! it seems you are at wrong page !' />,
     children:[
       {
         path:'/',
@@ -56,6 +60,14 @@ const router = createBrowserRouter([
       {
         path:'post/edit/:id',
         element:<EditBlog/>
+      },
+      {
+        path:'feedback',
+        element:<Feedback/>
+      },
+      {
+        path:'about',
+        element:<About/>
       }
 
     ]
