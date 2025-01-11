@@ -75,10 +75,10 @@ const SpecificBlog = () => {
       const Response = await axiosInstence.get(`/api/post/view/${blogid}`);
 
       setBlog(Response.data.data);
-      if (Response.statusText == "OK" && Blog.length > 0) {
+      if (Response.statusText == "OK" && Blog?.length > 0) {
         dispatch(SetLoading(false));
       }
-      console.log(Response.data.data);
+      // console  .log(Response.data.data);
     } catch (error) {
       dispatch(SetLoading(false));
       console.log(error.message);
@@ -93,6 +93,8 @@ const SpecificBlog = () => {
       setTotalComment(AllComments.data.comments.length);
 
       setAllCommentsOfPost(AllComments?.data?.comments);
+
+      dispatch(SetLoading(false))
     } catch (error) {
       console.log(error);
     }
@@ -208,11 +210,12 @@ const SpecificBlog = () => {
       setLikeState("Like");
       setIsLiked(false);
     }
+
+
     // console.log(LikeState,IsLiked)
 
     // console.log("getAllCommetns", AllCommentsOfPost);
   }, [blogid]);
-  console.log(AllCommentsOfPost);
   useEffect(() => {
     if (Blog?.likedBy?.includes(currentUser?._id)) {
       setIsLiked(true);
@@ -223,12 +226,14 @@ const SpecificBlog = () => {
   }, [LikeState]);
   useEffect(() => {
     getAllCommetns();
+    // console.log(AllCommentsOfPost[1]?.commentedBy._id)
+    // console.log(Blog?.postBy?.userId)
+
   }, [CommentAdded]);
 
   useEffect(() => {
     getTotalLikes();
   }, [Liked,LikeState]);
-  console.log(LikeState)
 
   if (loading) {
     return <Loader />;
@@ -370,6 +375,7 @@ const SpecificBlog = () => {
                           alt={parentComment?.commentedBy?.firstName}
                         />
                         {parentComment?.commentedBy?.firstName}
+                        {Blog?.postBy?.userId == parentComment?.commentedBy._id && <h1 className="p-1 py-0 ml-3 text-white bg-gray-400 rounded-lg"> Author</h1>}
                       </Link>
                     </div>
                   </footer>
@@ -480,10 +486,13 @@ const SpecificBlog = () => {
                                 alt={childComment?.commentedBy?.firstName}
                               />
                               {childComment?.commentedBy?.firstName}
+                              {Blog?.postBy?.userId == childComment?.commentedBy._id && <h1 className="p-1 py-0 ml-3 text-white bg-gray-400 rounded-lg"> Author</h1>}
+
                             </Link>
                           </div>
                         </footer>
-                        <p className="text-gray-500">{childComment?.text}</p>
+                        
+                        <p className="text-gray-500">{<Link to={`/profile/${parentComment?.commentedBy?._id}`} className="text-blue-600">@{parentComment?.commentedBy?.firstName+" "}</Link>}{childComment?.text}</p>
                         {currentUser?._id ===
                           childComment?.commentedBy?._id && (
                           <div className="flex gap-4">
@@ -520,13 +529,13 @@ const SpecificBlog = () => {
                                     onClick={() => {
                                       setreplyEditOf(childComment?._id);
                                     }}
-                                    className="text-sm text-gray-500 hover:underline font-medium mt-2"
+                                    className="text-sm text-blue-500 hover:underline font-medium mt-2"
                                   >
                                     Edit
                                   </button>
                                   <button
                                     onClick={() => {deleteCommentOrReply(childComment?._id)}}
-                                    className="text-sm text-gray-500 hover:underline font-medium mt-2"
+                                    className="text-sm text-red-500 hover:underline font-medium mt-2"
                                   >
                                     Delete
                                   </button>

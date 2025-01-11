@@ -10,6 +10,7 @@ import { login } from "../features/userSlice.js";
 import axiosInstence from "../utils/axiosInstance.js";
 import { SetLoading } from "../features/LoadingSlice.js";
 import Loader, { MiniLoader } from "./Loader.jsx";
+import { setError } from "../features/ConfigSlice.js";
 
 const Auth = () => {
   const [IsSignUp, setIsSignUp] = useState(true);
@@ -23,6 +24,8 @@ const Auth = () => {
   const [password, setpassword] = useState("");
   const [ResetingPassword, setResetingPassword] = useState(false);
   const [EmailForReset, setEmailForReset] = useState("");
+
+  const {CurrentError} = useSelector((state)=>state.config)
   const dispatch = useDispatch();
   const HandleSignUp = async (e) => {
     e.preventDefault();
@@ -44,8 +47,9 @@ const Auth = () => {
       }
     } catch (error) {
       dispatch(SetLoading(false));
-      toast.error(error.message);
-      console.log(error.message);
+      toast.error(error.response.data.message);
+      dispatch(setError(error.response.data.message))
+      // console.log(error.message);
     }
   };
 
@@ -68,8 +72,9 @@ const Auth = () => {
         navigate("/");
       }
     } catch (error) {
-      dispatch(SetLoading(false))
-      toast.error(error.message);
+      dispatch(SetLoading(false));
+      toast.error(error.response.data.message);
+      dispatch(setError(error.response.data.message))
     }
   };
 
@@ -346,6 +351,7 @@ const Auth = () => {
             />
             <label className="text-sm">Show Password</label>
           </div>
+            <h1 className="text-red-600">{CurrentError}</h1>
           {loading ? <MiniLoader/> :<button
             type="submit"
             className={`w-full px-8 py-3 font-semibold rounded-md ${
@@ -400,7 +406,9 @@ const Auth = () => {
               placeholder="Enter your password"
             />
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+          <h1 className="text-red-600">{CurrentError}</h1>
+
             <button
               onClick={() => setResetingPassword(true)}
               className="text-xs text-indigo-600 hover:underline"

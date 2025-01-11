@@ -21,5 +21,5 @@ const configSlice = createSlice({
 })
 
 
-export const {setSearching } = configSlice.actions;
+export const {setSearching,setError,removeError } = configSlice.actions;
 export default configSlice.reducer

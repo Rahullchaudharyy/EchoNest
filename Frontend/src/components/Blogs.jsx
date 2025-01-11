@@ -29,12 +29,14 @@ const Blogs = () => {
       const data = await axiosInstence.get(`/api/post/posts?page=${page}&limit=${limit}`);
       const dataForCategory = await axiosInstence.get("/api/post/posts");
       // console.log(dataForCategory)
-      const Category = dataForCategory?.data?.data?.map(
+      let Category = dataForCategory?.data?.data?.map(
         (data) => data.category
       );
-      //  console.log(Category)
+      const UniqueCategory = Category.filter((str, index, arr) => arr.indexOf(str) === index);
+
+      //  console.log(UniqueCategory)
       await dispatch(addBlog(data?.data?.data));
-      await setcategories(Category);
+      await setcategories(UniqueCategory);
       await setBlogData(data.data.data);
       dispatch(SetLoading(false));
 
@@ -91,7 +93,7 @@ const Blogs = () => {
   }, [page]);
   useEffect(() => {
     getTopUser()
-    console.log(TopAuthors)
+    // console.log(TopAuthors)
   }, [])
   
 

@@ -20,8 +20,14 @@ authRouter.post('/api/auth/signup', upload.single('file'), async (req, res) => {
         const profileUrl = req.body.profileUrl; 
 
         const existingUser = await User.findOne({ emailId });
+        const existingUserName = await User.findOne({ username });
         if (existingUser) {
             throw new Error("A user with this email already exists. Please try logging in or register with a different email.");
+        }
+        
+
+        if (existingUserName) {
+            throw new Error("User with this username is already exists , Choose diffrent username!");
         }
         const EncryptedPassword = await bcrypt.hash(password, 10);
 
@@ -71,7 +77,7 @@ authRouter.post('/api/auth/signin', async (req, res) => {
         const isPasswordCorrect = await bcrypt.compare(password, user.password)
 
         if (!isPasswordCorrect) {
-            throw new Error("Invalid Credential ! Wrong Password ");
+            throw new Error("Invalid Credential");
         }
 
         const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY,{expiresIn:'1d'})
