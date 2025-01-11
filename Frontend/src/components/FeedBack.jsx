@@ -81,6 +81,7 @@ const FeedbackForm = () => {
             <div className="relative">
               <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
               <input
+              required
                 type="text"
                 id="name"
                 name="name"
@@ -100,6 +101,7 @@ const FeedbackForm = () => {
             <div className="relative">
               <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-accent" />
               <input
+              required
                 type="email"
                 id="email"
                 name="email"
@@ -117,6 +119,7 @@ const FeedbackForm = () => {
               Message
             </label>
             <textarea
+            required
               id="message"
               name="message"
               value={formData.message}
