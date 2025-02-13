@@ -24,7 +24,6 @@ const MyProfile = () => {
   // console.log(profileId);
   const { currentUser } = useSelector((state) => state.user);
 
-
   const GetMyBlogs = async () => {
     try {
       dispatch(SetLoading(true));
@@ -56,8 +55,8 @@ const MyProfile = () => {
           withCredentials: true,
         }
       );
-      if (response.statusText == 'OK') {
-        dispatch(logout())
+      if (response.statusText == "OK") {
+        dispatch(logout());
         navigate("/");
       }
     } catch (error) {
@@ -151,9 +150,10 @@ const MyProfile = () => {
 
                 {showOptions == data?._id && (
                   <div className=" bg-white shadow-lg rounded-lg  mt-[40px] w-40">
-                    <Link 
-                    to={`/post/edit/${data?._id}`}
-                    className="block text-left px-4 py-2 text-sm text-blue-500 hover:bg-gray-100 w-full">
+                    <Link
+                      to={`/post/edit/${data?._id}`}
+                      className="block text-left px-4 py-2 text-sm text-blue-500 hover:bg-gray-100 w-full"
+                    >
                       Edit
                     </Link>
                     <button
@@ -190,7 +190,11 @@ const MyProfile = () => {
                 {data?.title}
               </Link>
               <p className="text-sm md:text-base text-gray-500 font-bold break-words">
-                {truncateText(data?.content, 20)}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: truncateText(data?.content, 20),
+                  }}
+                ></div>
               </p>
               <div
                 id="Author"
