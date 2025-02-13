@@ -4,6 +4,8 @@ import BlogCard from "./BlogCard";
 import axiosInstence from "../utils/axiosInstance";
 import { useParams } from "react-router-dom";
 import { SetLoading } from "../features/LoadingSlice";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import styles
 
 const EditBlog = () => {
   const { id } = useParams();
