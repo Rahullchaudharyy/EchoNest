@@ -320,7 +320,7 @@ const SpecificBlog = () => {
         </div>
 
         {/* Blog Content */}
-        <div id="Information" className="px-4 md:px-24 max-w-screen-lg">
+        <div id="Information" className="px-4 md:px-24 ">
           {/* <h2 className="text-lg md:text-xl text-gray-700 mb-4">
             {Blog?.content}
           </h2> */}
