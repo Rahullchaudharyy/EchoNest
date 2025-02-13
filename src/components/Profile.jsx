@@ -65,7 +65,7 @@ const Profile = () => {
     getMyBlogs();
     fetchProfile();
     console.log(user);
-  }, [profileId]); // Depend on profileId to re-fetch if it changes
+  }, [profileId]);
   if (loading) {
     <Loader />;
   }
@@ -192,7 +192,10 @@ const Profile = () => {
 
       {ShowProfile && (
         <div className="w-[100%]  h-[100%] fixed top-0 left-0 bg-black/30 backdrop-blur-sm transition-all duration-300   ">
-          <i onClick={()=>setShowProfile(!ShowProfile)} className="cursor-pointer absolute right-0 p-3 text-white drop-shadow-xl text-[30px] ri-close-large-line"></i>
+          <i
+            onClick={() => setShowProfile(!ShowProfile)}
+            className="cursor-pointer absolute right-0 p-3 text-white drop-shadow-xl text-[30px] ri-close-large-line"
+          ></i>
 
           <div className=" rounded-md  absolute z-[100] transform -translate-y-1/2 overflow-hidden -translate-x-1/2 left-1/2 top-1/2 w-[400px] h-[400px] ">
             <img

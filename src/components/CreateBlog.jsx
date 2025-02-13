@@ -5,6 +5,9 @@ import axios from "axios";
 import { SetLoading } from "../features/LoadingSlice";
 import axiosInstence from "../utils/axiosInstance";
 
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import styles
+
 const CreateBlog = () => {
   const [title, settitle] = useState("");
   const [content, setcontent] = useState("");
@@ -17,6 +20,7 @@ const CreateBlog = () => {
   const [Ohter, setOhter] = useState(true);
   const url = image ? URL.createObjectURL(image) : "defaul.jpg";
   const { loading } = useSelector((state) => state.loading);
+
   const dispatch = useDispatch();
 
   const HandleCreateBlog = async (e) => {
@@ -65,9 +69,9 @@ const CreateBlog = () => {
   }, [categoryblog]);
 
   return (
-    <div className="h-[100vh] flex md:h-[80vh] mb-[100px] md:mb-[200px] p-6 w-full ">
+    <div className="h-[100vh] flex md:h-full mb-[100px] md:mb-[200px] p-6 w-full ">
       <form
-        className=" md:w-[70%] w-full p-5 h-auto pb-5 md:relative transition-all  md:grid grid-cols-2 gap-6 border"
+        className=" md:w-[70%] w-full p-5 h-auto pb-5 md:relative transition-all  md:flex flex-col gap-6 border"
         onSubmit={(e) => HandleCreateBlog(e)}
       >
         {/* Left side - Title, Content, and Image */}
@@ -86,7 +90,7 @@ const CreateBlog = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-3 ">
+          {/* <div className="flex flex-col gap-3 ">
             <label htmlFor="Content" className="text-2xl font-bold">
               Content
             </label>
@@ -97,9 +101,14 @@ const CreateBlog = () => {
               value={content}
               onChange={(e) => setcontent(e.target.value)}
             />
-          </div>
+          </div> */}
 
-          <div className="flex flex-col gap-3 ">
+          <label htmlFor="Content" className="text-2xl font-bold">
+            Content
+          </label>
+          <ReactQuill theme="snow" value={content} onChange={setcontent} />
+
+          <div className="flex flex-col gap-3 mt-10  ">
             <label htmlFor="photo" className="text-2xl font-bold text-gray-700">
               Photo
             </label>

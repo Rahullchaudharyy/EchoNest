@@ -29,7 +29,7 @@ const SpecificBlog = () => {
 
   const [replyEditOf, setreplyEditOf] = useState("");
   const [ReplyEditText, setReplyEditText] = useState("");
-  const [Liked, setLiked] = useState(false)
+  const [Liked, setLiked] = useState(false);
 
   const handleLike = async (postId) => {
     try {
@@ -47,17 +47,15 @@ const SpecificBlog = () => {
       // console.log(response)
 
       if (response.status == 201) {
-
-        setLiked(!Liked)
+        setLiked(!Liked);
         // setTotalLikesOnPost(response.data.data.length)
-        console.log("Like Stuff",response.data)
+        console.log("Like Stuff", response.data);
         // console.log(response)
         toast.success(response.data.message.toLowerCase().replace(/\s+/g, ""));
         response.data.message.toLowerCase().replace(/\s+/g, "") ==
         "postlikedsuccessfully"
           ? setLikeState(true)
           : setLikeState(false);
-
 
         // console.log(response.data.message.toLowerCase().replace(/\s+/g, ''));
       }
@@ -94,7 +92,7 @@ const SpecificBlog = () => {
 
       setAllCommentsOfPost(AllComments?.data?.comments);
 
-      dispatch(SetLoading(false))
+      dispatch(SetLoading(false));
     } catch (error) {
       console.log(error);
     }
@@ -116,7 +114,7 @@ const SpecificBlog = () => {
 
       toast.info(reply.data.message);
       setCommentAdded(!CommentAdded);
-      setReplyingOf('')
+      setReplyingOf("");
       console.log(reply);
     } catch (error) {
       console.log(error);
@@ -166,40 +164,45 @@ const SpecificBlog = () => {
   const editReply = async (CommentOrReplyId) => {
     try {
       if (!isLoggedIn) {
-        setreplyEditOf('')
-        ShowPopUp(true)
+        setreplyEditOf("");
+        ShowPopUp(true);
         return;
       }
 
-      if (ReplyEditText.length == 0 ) {
-        setreplyEditOf('')
+      if (ReplyEditText.length == 0) {
+        setreplyEditOf("");
       }
 
-      const edit = await axiosInstence.patch(`/api/post/comment/edit/${CommentOrReplyId}`,{
-        text:ReplyEditText
-      })
+      const edit = await axiosInstence.patch(
+        `/api/post/comment/edit/${CommentOrReplyId}`,
+        {
+          text: ReplyEditText,
+        }
+      );
       if (edit.status == 201) {
-        console.log('Successfully')
-        getAllCommetns()
-        setreplyEditOf('')
-        setReplyEditText('')
+        console.log("Successfully");
+        getAllCommetns();
+        setreplyEditOf("");
+        setReplyEditText("");
       }
-      console.log(edit)
+      console.log(edit);
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
   };
   const deleteCommentOrReply = async (commentOrReplyId) => {
     try {
-      const DeleteComment = await axiosInstence.delete(`/api/post/comment/delete/${commentOrReplyId}`);
+      const DeleteComment = await axiosInstence.delete(
+        `/api/post/comment/delete/${commentOrReplyId}`
+      );
       if (DeleteComment.status == 201) {
-        toast.success('Comment Deleted')
-        getAllCommetns()
+        toast.success("Comment Deleted");
+        getAllCommetns();
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
     getBlogs();
     getAllCommetns();
@@ -210,7 +213,6 @@ const SpecificBlog = () => {
       setLikeState("Like");
       setIsLiked(false);
     }
-
 
     // console.log(LikeState,IsLiked)
 
@@ -228,12 +230,11 @@ const SpecificBlog = () => {
     getAllCommetns();
     // console.log(AllCommentsOfPost[1]?.commentedBy._id)
     // console.log(Blog?.postBy?.userId)
-
   }, [CommentAdded]);
 
   useEffect(() => {
     getTotalLikes();
-  }, [Liked,LikeState]);
+  }, [Liked, LikeState]);
 
   if (loading) {
     return <Loader />;
@@ -306,8 +307,8 @@ const SpecificBlog = () => {
             onClick={(e) => handleLike(Blog?._id)}
             className="bg-blue-300 p-[8px] rounded-lg text-center "
           >
-            <i className="ri-thumb-up-line text-blue-500"></i> {LikeState == true ? 'Liked':'Like'} (
-            {TotalLikesOnPost})
+            <i className="ri-thumb-up-line text-blue-500"></i>{" "}
+            {LikeState == true ? "Liked" : "Like"} ({TotalLikesOnPost})
           </button>
           <a
             href="#comment"
@@ -320,9 +321,10 @@ const SpecificBlog = () => {
 
         {/* Blog Content */}
         <div id="Information" className="px-4 md:px-24 max-w-screen-lg">
-          <h2 className="text-lg md:text-xl text-gray-700 mb-4">
+          {/* <h2 className="text-lg md:text-xl text-gray-700 mb-4">
             {Blog?.content}
-          </h2>
+          </h2> */}
+          <div dangerouslySetInnerHTML={{ __html: Blog?.content }} />
         </div>
 
         <section id="comment" className="bg-gray-100 py-8 lg:py-16 antialiased">
@@ -375,7 +377,13 @@ const SpecificBlog = () => {
                           alt={parentComment?.commentedBy?.firstName}
                         />
                         {parentComment?.commentedBy?.firstName}
-                        {Blog?.postBy?.userId == parentComment?.commentedBy._id && <h1 className="p-1 py-0 ml-3 text-white bg-gray-400 rounded-lg"> Author</h1>}
+                        {Blog?.postBy?.userId ==
+                          parentComment?.commentedBy._id && (
+                          <h1 className="p-1 py-0 ml-3 text-white bg-gray-400 rounded-lg">
+                            {" "}
+                            Author
+                          </h1>
+                        )}
                       </Link>
                     </div>
                   </footer>
@@ -411,38 +419,38 @@ const SpecificBlog = () => {
                       >
                         Reply
                       </button>
-                      {
-                        replyEditOf == parentComment?._id ? (
-                          <>
-                            <input
-                              value={ReplyEditText !== null ? ReplyEditText : parentComment?.text}
-                              onChange={(e) =>
-                                setReplyEditText(e.target.value)
-                              }
-                              type="text"
-                              placeholder={`edit your reply`}
-                              className="p-1 border rounded-md focus:outline-dashed"
-                            />
-                            <button
-                              onClick={() =>
-                                editReply(parentComment?._id)
-                              }
-                              className="text-gray-400 p-1 border rounded-md"
-                            >
-                              Save Reply
-                            </button>
-                            <button
-                              onClick={() => setreplyEditOf("")}
-                              className="text-gray-400 p-1 border rounded-md"
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) :
-                        currentUser?._id === parentComment?.commentedBy?._id && (
+                      {replyEditOf == parentComment?._id ? (
+                        <>
+                          <input
+                            value={
+                              ReplyEditText !== null
+                                ? ReplyEditText
+                                : parentComment?.text
+                            }
+                            onChange={(e) => setReplyEditText(e.target.value)}
+                            type="text"
+                            placeholder={`edit your reply`}
+                            className="p-1 border rounded-md focus:outline-dashed"
+                          />
+                          <button
+                            onClick={() => editReply(parentComment?._id)}
+                            className="text-gray-400 p-1 border rounded-md"
+                          >
+                            Save Reply
+                          </button>
+                          <button
+                            onClick={() => setreplyEditOf("")}
+                            className="text-gray-400 p-1 border rounded-md"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        currentUser?._id ===
+                          parentComment?.commentedBy?._id && (
                           <div className="flex gap-4">
                             <button
-                               onClick={() => {
+                              onClick={() => {
                                 setreplyEditOf(parentComment?._id);
                               }}
                               className="text-sm text-gray-500 hover:underline font-medium mt-2"
@@ -450,17 +458,18 @@ const SpecificBlog = () => {
                               Edit
                             </button>
                             <button
-                              onClick={() => {deleteCommentOrReply(parentComment?._id)}}
+                              onClick={() => {
+                                deleteCommentOrReply(parentComment?._id);
+                              }}
                               className="text-sm text-gray-500 hover:underline font-medium mt-2"
                             >
                               Delete
                             </button>
                           </div>
-                        )}
-                      </div>
-                    )
-                      }
-                    
+                        )
+                      )}
+                    </div>
+                  )}
 
                   {/* Nested Replies */}
                   <div className="ml-6 mt-4">
@@ -486,13 +495,28 @@ const SpecificBlog = () => {
                                 alt={childComment?.commentedBy?.firstName}
                               />
                               {childComment?.commentedBy?.firstName}
-                              {Blog?.postBy?.userId == childComment?.commentedBy._id && <h1 className="p-1 py-0 ml-3 text-white bg-gray-400 rounded-lg"> Author</h1>}
-
+                              {Blog?.postBy?.userId ==
+                                childComment?.commentedBy._id && (
+                                <h1 className="p-1 py-0 ml-3 text-white bg-gray-400 rounded-lg">
+                                  {" "}
+                                  Author
+                                </h1>
+                              )}
                             </Link>
                           </div>
                         </footer>
-                        
-                        <p className="text-gray-500">{<Link to={`/profile/${parentComment?.commentedBy?._id}`} className="text-blue-600">@{parentComment?.commentedBy?.firstName+" "}</Link>}{childComment?.text}</p>
+
+                        <p className="text-gray-500">
+                          {
+                            <Link
+                              to={`/profile/${parentComment?.commentedBy?._id}`}
+                              className="text-blue-600"
+                            >
+                              @{parentComment?.commentedBy?.firstName + " "}
+                            </Link>
+                          }
+                          {childComment?.text}
+                        </p>
                         {currentUser?._id ===
                           childComment?.commentedBy?._id && (
                           <div className="flex gap-4">
@@ -500,7 +524,11 @@ const SpecificBlog = () => {
                               {replyEditOf == childComment?._id ? (
                                 <>
                                   <input
-                                    value={ReplyEditText !== null ? ReplyEditText : childComment?.text}
+                                    value={
+                                      ReplyEditText !== null
+                                        ? ReplyEditText
+                                        : childComment?.text
+                                    }
                                     onChange={(e) =>
                                       setReplyEditText(e.target.value)
                                     }
@@ -509,9 +537,7 @@ const SpecificBlog = () => {
                                     className="p-1 border rounded-md focus:outline-dashed"
                                   />
                                   <button
-                                    onClick={() =>
-                                      editReply(childComment?._id)
-                                    }
+                                    onClick={() => editReply(childComment?._id)}
                                     className="text-gray-400 p-1 border rounded-md"
                                   >
                                     Save Reply
@@ -534,7 +560,9 @@ const SpecificBlog = () => {
                                     Edit
                                   </button>
                                   <button
-                                    onClick={() => {deleteCommentOrReply(childComment?._id)}}
+                                    onClick={() => {
+                                      deleteCommentOrReply(childComment?._id);
+                                    }}
                                     className="text-sm text-red-500 hover:underline font-medium mt-2"
                                   >
                                     Delete
