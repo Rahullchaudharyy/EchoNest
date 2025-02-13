@@ -17,12 +17,12 @@ const EditBlog = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { loading } = useSelector((state) => state.loading);
   const dispatch = useDispatch();
-  const formData = {}
-  formData.title = title
-  formData.content = content
-  formData.status =  visibility
-  formData.category =  categoryBlog
-  if (image) formData.file = image
+  const formData = {};
+  formData.title = title;
+  formData.content = content;
+  formData.status = visibility;
+  formData.category = categoryBlog;
+  if (image) formData.file = image;
   const getBlogs = async () => {
     try {
       dispatch(SetLoading(true));
@@ -46,8 +46,6 @@ const EditBlog = () => {
   const handleEditBlog = async (e) => {
     e.preventDefault();
 
-
-    
     try {
       dispatch(SetLoading(true));
       // const response = await axiosInstence.patch(
@@ -61,21 +59,26 @@ const EditBlog = () => {
       //   }
       // );
 
-      const response = await axiosInstence.patch(`/api/post/edit/${id}`,formData,{
-        headers:{
-          "Content-Type":"multipart/form-data"
-        },
-        withCredentials:true
-      }
-    
-    )
+      const response = await axiosInstence.patch(
+        `/api/post/edit/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
 
       if (response.status >= 200 && response.status < 300) {
         console.log("Post Updated Successfully");
       }
       dispatch(SetLoading(false));
     } catch (error) {
-      console.error("Error updating post:", error.response?.data?.message || error.message);
+      console.error(
+        "Error updating post:",
+        error.response?.data?.message || error.message
+      );
       dispatch(SetLoading(false));
     }
   };
@@ -92,15 +95,14 @@ const EditBlog = () => {
   }, [id]);
 
   useEffect(() => {
-    console.log(title,content,visibility)
-    console.log(formData)
-  }, [title,content,visibility])
-  
+    console.log(title, content, visibility);
+    console.log(formData);
+  }, [title, content, visibility]);
 
   return (
-    <div className="h-[100vh] flex md:h-[80vh] mb-[100px] md:mb-[200px] p-6 w-full">
+    <div className="h-[100vh] flex md:h-full mb-[100px] md:mb-[200px] p-6 w-full">
       <form
-        className="md:w-[70%] w-full p-5 h-auto pb-5 md:relative transition-all md:grid grid-cols-2 gap-6 border"
+        className="md:w-[70%] w-full p-5 h-auto pb-5 md:relative transition-all md:flex flex-col gap-6 border"
         onSubmit={handleEditBlog}
       >
         {/* Left Side */}
@@ -119,7 +121,7 @@ const EditBlog = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-3">
+          {/* <div className="flex flex-col gap-3">
             <label htmlFor="Content" className="text-2xl font-bold">
               Content
             </label>
@@ -130,7 +132,16 @@ const EditBlog = () => {
               onChange={(e) => setContent(e.target.value)}
               required
             />
-          </div>
+          </div> */}
+
+          <label htmlFor="Content" className="text-2xl font-bold">
+            Content
+          </label>
+          <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
 
           <div className="flex flex-col gap-3">
             <label htmlFor="photo" className="text-2xl font-bold text-gray-700">

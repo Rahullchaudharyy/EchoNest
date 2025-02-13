@@ -90,19 +90,6 @@ const CreateBlog = () => {
             />
           </div>
 
-          {/* <div className="flex flex-col gap-3 ">
-            <label htmlFor="Content" className="text-2xl font-bold">
-              Content
-            </label>
-            <textarea
-              required
-              id="Content"
-              className="w-full p-2 rounded-md border-2 h-[150px] resize-none"
-              value={content}
-              onChange={(e) => setcontent(e.target.value)}
-            />
-          </div> */}
-
           <label htmlFor="Content" className="text-2xl font-bold">
             Content
           </label>
