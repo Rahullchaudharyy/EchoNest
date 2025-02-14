@@ -25,7 +25,7 @@ const Auth = () => {
   const [ResetingPassword, setResetingPassword] = useState(false);
   const [EmailForReset, setEmailForReset] = useState("");
 
-  const {CurrentError} = useSelector((state)=>state.config)
+  const { CurrentError } = useSelector((state) => state.config);
   const dispatch = useDispatch();
   const HandleSignUp = async (e) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ const Auth = () => {
     } catch (error) {
       dispatch(SetLoading(false));
       toast.error(error.response.data.message);
-      dispatch(setError(error.response.data.message))
+      dispatch(setError(error.response.data.message));
       // console.log(error.message);
     }
   };
@@ -57,24 +57,27 @@ const Auth = () => {
     e.preventDefault();
 
     try {
-      dispatch(SetLoading(true))
+      dispatch(SetLoading(true));
 
       const response = await axiosInstence.post("/api/auth/signin", {
         emailId: emailId,
         password: password,
       });
 
-      if (response.status == 201) {
+      // console.log(response.data.token);
+      if (response.data.token) {
+        localStorage.setItem("token", response?.data?.token);
         // console.log("LoggedIn stuffs", response)
-        dispatch(SetLoading(false))
-
+        dispatch(SetLoading(false));
+        console.log(response.headers);
         dispatch(login(response.data.yourProfile));
         navigate("/");
       }
     } catch (error) {
+      console.log(error);
       dispatch(SetLoading(false));
-      toast.error(error.response.data.message);
-      dispatch(setError(error.response.data.message))
+      toast.error(error.response?.data?.message);
+      dispatch(setError(error.response.data.message));
     }
   };
 
@@ -90,377 +93,195 @@ const Auth = () => {
   //   )
   // }
 
-  const HandleResetPassword = async () => {
-
-  };
+  const HandleResetPassword = async () => {};
 
   return (
-    // <div className="h-auto w-auto flex">
-    //   <ToastContainer />
-
-    //   <div
-    //     id="Auth-Left"
-    //     className="h-full w-[50%] hidden md:flex justify-center items-center flex-col p-0 relative"
-    //   >
-    //     <img
-    //       src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA3L2pvYjE0NDgtYmFja2dyb3VuZC0wNGEteF8xLmpwZw.jpg"
-    //       alt="Background"
-    //       className="h-screen w-full"
-    //     />
-    //   </div>
-    //   <div
-    //     id="Auth-Right"
-    //     className="h-full w-full md:w-[50%] flex justify-center items-center p-10 md:p-20"
-    //   >
-    //     {IsSignUp ? (
-    //       <div className="flex flex-col gap-9">
-    //         <div className="flex flex-col justify-center items-center gap-11">
-    //           <h1 className="text-center text-3xl font-semibold">
-    //             Throw your Blogs article: Create Your Account
-    //           </h1>
-    //         </div>
-
-    //         <form className="flex flex-col gap-3" onSubmit={HandleSignUp}>
-    //           <label htmlFor="Username" className="text-sm">
-    //             Username
-    //           </label>
-    //           <input
-    //             value={Username}
-    //             onChange={(e) => setUsername(e.target.value)}
-    //             className="p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500"
-    //             type="text"
-    //             placeholder="Name"
-    //           />
-    //           <label htmlFor="Name" className="text-sm">
-    //             Name
-    //           </label>
-    //           <input
-    //             value={Name}
-    //             onChange={(e) => setName(e.target.value)}
-    //             className="p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500"
-    //             type="text"
-    //             placeholder="Name"
-    //           />
-    //           <label htmlFor="Email" className="text-sm">
-    //             Email
-    //           </label>
-    //           <input
-    //             value={emailId}
-    //             onChange={(e) => setemailId(e.target.value)}
-    //             className="p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500"
-    //             type="text"
-    //             placeholder="Email"
-    //           />
-    //           <label htmlFor="Username" className="text-sm">
-    //             Password
-    //           </label>
-    //           <input
-    //             value={password}
-    //             onChange={(e) => setpassword(e.target.value)}
-    //             className="p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500"
-    //             type="text"
-    //             placeholder="Password"
-    //           />
-    //           <span className="flex items-center  gap-4">
-    //             <input
-    //               type="checkbox"
-    //               className="rounded-full h-[20px] w-[20px] "
-    //             />{" "}
-    //             Show the password{" "}
-    //             <button
-    //               type="submit"
-    //               className={`bg-purple-500 p-3 ${
-    //                 loading
-    //                   ? "cursor-not-allowed bg-purple-400"
-    //                   : "cursor-pointer"
-    //               }  fixed md:right-[4.9rem] right-9 text-white rounded-full mt-3`}
-    //             >
-    //               SignUp
-    //             </button>
-    //           </span>
-    //         </form>
-    //         <h1 className="">
-    //           Already have an account ?{" "}
-    //           <button
-    //             onClick={() => setIsSignUp(!IsSignUp)}
-    //             className={`border-b ${
-    //               loading ? "cursor-not-allowed" : "cursor-pointer"
-    //             } border-b-blue-600 bg-none`}
-    //           >
-    //             SignIn
-    //           </button>
-    //         </h1>
-    //       </div>
-    //     ) : (
-    //       <div className="flex flex-col gap-9">
-    //         <div className="flex flex-col justify-center items-center gap-11">
-    //           <h1 className="text-center text-3xl font-semibold">
-    //             Welcome Back !! Glad you come agian
-    //           </h1>
-    //           <button className="p-5 bg-gray-300 rounded-full">
-    //             <i class="ri-google-fill"></i>Signin with Google
-    //           </button>
-    //         </div>
-
-    //         <form
-    //           onSubmit={HandleSignIn}
-    //           className="flex flex-col gap-3"
-    //           action=""
-    //         >
-    //           <label htmlFor="Email" className="text-sm">
-    //             Email
-    //           </label>
-    //           <input
-    //             value={emailId}
-    //             onChange={(e) => setemailId(e.target.value)}
-    //             className="p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500"
-    //             type="text"
-    //             placeholder="Email"
-    //           />
-    //           <label htmlFor="Username" className="text-sm">
-    //             Password
-    //           </label>
-    //           <input
-    //             value={password}
-    //             onChange={(e) => setpassword(e.target.value)}
-    //             className="p-4 outline-none focus:border-gray-800 transition-opacity border-b-2 border-gray-500"
-    //             type="text"
-    //             placeholder="Password"
-    //           />
-    //           <span className="flex items-center  gap-4">
-    //             <input
-    //               type="checkbox"
-    //               className="rounded-full h-[20px] w-[20px] "
-    //             />{" "}
-    //             Show the password{" "}
-    //             <button
-    //               type="submit"
-    //               className={`bg-purple-500 p-3 ${
-    //                 loading
-    //                   ? "cursor-not-allowed bg-purple-400"
-    //                   : "cursor-pointer"
-    //               }  fixed md:right-[4.9rem] right-9 text-white rounded-full mt-3`}
-    //             >
-    //               Signin
-    //             </button>
-    //           </span>
-    //           <h1
-    //             onClick={() => setResetingPassword(true)}
-    //             className="text-blue-600 cursor-pointer"
-    //           >
-    //             Forgot password ?
-    //           </h1>
-    //         </form>
-    //         <h1 className="">
-    //           Don't have an account ?{" "}
-    //           <button
-    //             onClick={() => setIsSignUp(!IsSignUp)}
-    //             className="border-b border-b-blue-600 bg-none"
-    //           >
-    //             Register
-    //           </button>
-    //         </h1>
-    //       </div>
-    //     )}
-    //   </div>
-    //   {ResetingPassword && (
-    //     <div className="absolute p-[30px] flex justify-center items-center flex-col top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[250px] w-[350px] md:w-[500px] rounded-md bg-gray-100">
-    //       <h1 className="text-center p-6">Enter your registerd email</h1>
-    //       <input
-    //         type="email"
-    //         value={EmailForReset}
-    //         onChange={(e) => setEmailForReset(e.target.value)}
-    //         placeholder="Email"
-    //         className=" p-4 outline-none transition-opacity border rounded-xl border-gray-500"
-    //       />
-    //       <button
-    //         onClick={HandleResetPassword}
-    //         className="bg-purple-500 p-3 w-64 text-white rounded-full mt-3"
-    //       >
-    //         Send Reset link
-    //       </button>
-    //     </div>
-    //   )}
-    // </div>
     <div className="flex justify-center items-center h-screen dark:bg-gray-50 dark:text-gray-800">
-  <ToastContainer />
-  <div className="max-w-md md:w-[60%] p-6 rounded-md sm:p-10 bg-white shadow-md">
-    {IsSignUp ? (
-      <div>
-        <div className="mb-8 text-center">
-          <h1 className="my-3 text-4xl font-bold">Create Account</h1>
-          <p className="text-sm dark:text-gray-600">Join us and share your blogs</p>
-        </div>
-        <form className="space-y-6" onSubmit={HandleSignUp}>
+      <ToastContainer />
+      <div className="max-w-md md:w-[60%] p-6 rounded-md sm:p-10 bg-white shadow-md">
+        {IsSignUp ? (
           <div>
-            <label htmlFor="Username" className="block mb-2 text-sm">
-              Username
-            </label>
-            <input
-              required
-              value={Username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
-              type="text"
-              placeholder="Enter your username"
-            />
+            <div className="mb-8 text-center">
+              <h1 className="my-3 text-4xl font-bold">Create Account</h1>
+              <p className="text-sm dark:text-gray-600">
+                Join us and share your blogs
+              </p>
+            </div>
+            <form className="space-y-6" onSubmit={HandleSignUp}>
+              <div>
+                <label htmlFor="Username" className="block mb-2 text-sm">
+                  Username
+                </label>
+                <input
+                  required
+                  value={Username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
+                  type="text"
+                  placeholder="Enter your username"
+                />
+              </div>
+              <div>
+                <label htmlFor="Name" className="block mb-2 text-sm">
+                  Name
+                </label>
+                <input
+                  required
+                  value={Name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
+                  type="text"
+                  placeholder="Enter your name"
+                />
+              </div>
+              <div>
+                <label htmlFor="Email" className="block mb-2 text-sm">
+                  Email
+                </label>
+                <input
+                  required
+                  value={emailId}
+                  onChange={(e) => setemailId(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
+                  type="email"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div>
+                <label htmlFor="Password" className="block mb-2 text-sm">
+                  Password
+                </label>
+                <input
+                  required
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
+                  type="password"
+                  placeholder="Enter your password"
+                />
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded-md border-gray-300 mr-2"
+                />
+                <label className="text-sm">Show Password</label>
+              </div>
+              <h1 className="text-red-600">{CurrentError}</h1>
+              {loading ? (
+                <MiniLoader />
+              ) : (
+                <button
+                  type="submit"
+                  className={`w-full px-8 py-3 font-semibold rounded-md ${
+                    loading
+                      ? "cursor-not-allowed bg-purple-400"
+                      : "bg-purple-500 text-white"
+                  }`}
+                >
+                  Sign Up
+                </button>
+              )}
+            </form>
+            <p className="text-sm text-center mt-4 dark:text-gray-600">
+              Already have an account?{" "}
+              <button
+                onClick={() => setIsSignUp(false)}
+                className="text-indigo-600 hover:underline"
+              >
+                Sign In
+              </button>
+            </p>
           </div>
+        ) : (
           <div>
-            <label htmlFor="Name" className="block mb-2 text-sm">
-              Name
-            </label>
-            <input
-              required
-              value={Name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
-              type="text"
-              placeholder="Enter your name"
-            />
-          </div>
-          <div>
-            <label htmlFor="Email" className="block mb-2 text-sm">
-              Email
-            </label>
-            <input
-              required
-              value={emailId}
-              onChange={(e) => setemailId(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
-              type="email"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label htmlFor="Password" className="block mb-2 text-sm">
-              Password
-            </label>
-            <input
-              required
-              value={password}
-              onChange={(e) => setpassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
-              type="password"
-              placeholder="Enter your password"
-            />
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              className="h-4 w-4 rounded-md border-gray-300 mr-2"
-            />
-            <label className="text-sm">Show Password</label>
-          </div>
-            <h1 className="text-red-600">{CurrentError}</h1>
-          {loading ? <MiniLoader/> :<button
-            type="submit"
-            className={`w-full px-8 py-3 font-semibold rounded-md ${
-              loading
-                ? "cursor-not-allowed bg-purple-400"
-                : "bg-purple-500 text-white"
-            }`}
-          >
-            Sign Up
-          </button>}
-        </form>
-        <p className="text-sm text-center mt-4 dark:text-gray-600">
-          Already have an account?{" "}
-          <button
-            onClick={() => setIsSignUp(false)}
-            className="text-indigo-600 hover:underline"
-          >
-            Sign In
-          </button>
-        </p>
-      </div>
-    ) : (
-      <div>
-        <div className="mb-8 text-center">
-          <h1 className="my-3 text-4xl font-bold">Welcome Back</h1>
-          <p className="text-sm dark:text-gray-600">Sign in to access your account</p>
-        </div>
-        <form className="space-y-6" onSubmit={HandleSignIn}>
-          <div>
-            <label htmlFor="Email" className="block mb-2 text-sm">
-              Email
-            </label>
-            <input
-            required
-              value={emailId}
-              onChange={(e) => setemailId(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
-              type="email"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label htmlFor="Password" className="block mb-2 text-sm">
-              Password
-            </label>
-            <input
-            required
-              value={password}
-              onChange={(e) => setpassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
-              type="password"
-              placeholder="Enter your password"
-            />
-          </div>
-          <div className="flex justify-between">
-          <h1 className="text-red-600">{CurrentError}</h1>
+            <div className="mb-8 text-center">
+              <h1 className="my-3 text-4xl font-bold">Welcome Back</h1>
+              <p className="text-sm dark:text-gray-600">
+                Sign in to access your account
+              </p>
+            </div>
+            <form className="space-y-6" onSubmit={HandleSignIn}>
+              <div>
+                <label htmlFor="Email" className="block mb-2 text-sm">
+                  Email
+                </label>
+                <input
+                  required
+                  value={emailId}
+                  onChange={(e) => setemailId(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
+                  type="email"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div>
+                <label htmlFor="Password" className="block mb-2 text-sm">
+                  Password
+                </label>
+                <input
+                  required
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800"
+                  type="password"
+                  placeholder="Enter your password"
+                />
+              </div>
+              <div className="flex justify-between">
+                <h1 className="text-red-600">{CurrentError}</h1>
 
-            <button
-              onClick={() => setResetingPassword(true)}
-              className="text-xs text-indigo-600 hover:underline"
-            >
-              Forgot password?
-            </button>
+                <button
+                  onClick={() => setResetingPassword(true)}
+                  className="text-xs text-indigo-600 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+              <button
+                type="submit"
+                className={`w-full px-8 py-3 font-semibold rounded-md ${
+                  loading
+                    ? "cursor-not-allowed bg-purple-400"
+                    : "bg-purple-500 text-white"
+                }`}
+              >
+                Sign In
+              </button>
+            </form>
+            <p className="text-sm text-center mt-4 dark:text-gray-600">
+              Don't have an account yet?{" "}
+              <button
+                onClick={() => setIsSignUp(true)}
+                className="text-indigo-600 hover:underline"
+              >
+                Register
+              </button>
+            </p>
           </div>
-          <button
-            type="submit"
-            className={`w-full px-8 py-3 font-semibold rounded-md ${
-              loading
-                ? "cursor-not-allowed bg-purple-400"
-                : "bg-purple-500 text-white"
-            }`}
-          >
-            Sign In
-          </button>
-        </form>
-        <p className="text-sm text-center mt-4 dark:text-gray-600">
-          Don't have an account yet?{" "}
-          <button
-            onClick={() => setIsSignUp(true)}
-            className="text-indigo-600 hover:underline"
-          >
-            Register
-          </button>
-        </p>
+        )}
+        {ResetingPassword && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm">
+              <h1 className="text-center text-lg mb-4">Reset your password</h1>
+              <input
+                type="email"
+                value={EmailForReset}
+                onChange={(e) => setEmailForReset(e.target.value)}
+                placeholder="Enter your registered email"
+                className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 mb-4"
+              />
+              <button
+                onClick={HandleResetPassword}
+                className="w-full bg-purple-500 text-white px-4 py-2 rounded-md"
+              >
+                Send Reset Link
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    )}
-    {ResetingPassword && (
-      <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-        <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm">
-          <h1 className="text-center text-lg mb-4">Reset your password</h1>
-          <input
-            type="email"
-            value={EmailForReset}
-            onChange={(e) => setEmailForReset(e.target.value)}
-            placeholder="Enter your registered email"
-            className="w-full px-3 py-2 border rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 mb-4"
-          />
-          <button
-            onClick={HandleResetPassword}
-            className="w-full bg-purple-500 text-white px-4 py-2 rounded-md"
-          >
-            Send Reset Link
-          </button>
-        </div>
-      </div>
-    )}
-  </div>
-</div>
-
+    </div>
   );
 };
 

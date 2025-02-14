@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useAsyncError, useParams } from "react-router-dom";
+import { Link, useAsyncError, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
@@ -30,6 +30,7 @@ const SpecificBlog = () => {
   const [replyEditOf, setreplyEditOf] = useState("");
   const [ReplyEditText, setReplyEditText] = useState("");
   const [Liked, setLiked] = useState(false);
+  const navigate = useNavigate();
 
   const handleLike = async (postId) => {
     try {
@@ -71,7 +72,10 @@ const SpecificBlog = () => {
     try {
       dispatch(SetLoading(true));
       const Response = await axiosInstence.get(`/api/post/view/${blogid}`);
-
+      if (Response.status == 400) {
+        navigate("/");
+        return;
+      }
       setBlog(Response.data.data);
       if (Response.statusText == "OK" && Blog?.length > 0) {
         dispatch(SetLoading(false));
@@ -79,6 +83,7 @@ const SpecificBlog = () => {
       // console  .log(Response.data.data);
     } catch (error) {
       dispatch(SetLoading(false));
+      navigate(-1);
       console.log(error.message);
     }
   };
@@ -203,7 +208,12 @@ const SpecificBlog = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
+    if (!blogid || blogid.trim().length === 0) {
+      navigate(-1);
+      return;
+    }
     getBlogs();
     getAllCommetns();
     if (Blog?.likedBy?.includes(currentUser?._id)) {
@@ -320,7 +330,7 @@ const SpecificBlog = () => {
         </div>
 
         {/* Blog Content */}
-        <div id="Information" className="px-4 md:px-24 ">
+        <div id="Information" className="prose prose-lg px-4 md:px-24 ">
           {/* <h2 className="text-lg md:text-xl text-gray-700 mb-4">
             {Blog?.content}
           </h2> */}

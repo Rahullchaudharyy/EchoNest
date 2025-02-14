@@ -5,18 +5,25 @@ import axios from 'axios'
 
 const axiosInstence = axios.create({
     baseURL: '/api',
-    withCredentials:true
+    withCredentials: true
 })
-
-
 // const axiosInstence = axios.create({
 //     baseURL: 'http://localhost:3000',
-//     withCredentials:true
+//     withCredentials: true
 // })
-// for the production 
-// const axiosInstence = axios.create({
-//     baseURL:"https://echonest.onrender.com",
-//     withCredentials:true
-// })
+
+
+axiosInstence.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (err) => {
+        return Promise.reject(err)
+    }
+)
 
 export default axiosInstence

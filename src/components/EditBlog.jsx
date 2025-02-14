@@ -144,18 +144,17 @@ const EditBlog = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-
-          <div className="flex flex-col gap-3">
-            <label htmlFor="photo" className="text-2xl font-bold text-gray-700">
-              Photo
-            </label>
-            <input
-              id="photo"
-              type="file"
-              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              onChange={(e) => setImage(e.target.files[0])}
-            />
-          </div>
+        </div>
+        <div className="flex flex-col mt-9 gap-3">
+          <label htmlFor="photo" className="text-2xl font-bold text-gray-700">
+            Photo
+          </label>
+          <input
+            id="photo"
+            type="file"
+            className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
         </div>
 
         {/* Right Side */}

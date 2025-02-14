@@ -3,10 +3,24 @@
 @tailwind utilities;
 
 /* Global CSS or Tailwind class */
-html{
+html {
     scroll-behavior: smooth;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Hides scrollbar for webkit browsers */
-  }
+    display: none;
+    /* Hides scrollbar for webkit browsers */
+}
+
+
+#Information h1 {
+    @apply text-3xl font-bold;
+}
+
+#Information h2 {
+    @apply text-2xl font-semibold;
+}
+
+#Information p {
+    @apply text-base;
+}

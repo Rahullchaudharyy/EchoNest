@@ -48,17 +48,9 @@ const MyProfile = () => {
 
   const HandleLogOut = async () => {
     try {
-      const response = await axiosInstence.post(
-        `/api/auth/logout`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.statusText == "OK") {
-        dispatch(logout());
-        navigate("/");
-      }
+      localStorage.removeItem("token");
+      dispatch(logout());
+      window.location.href = "/";
     } catch (error) {
       console.log(error);
     }
