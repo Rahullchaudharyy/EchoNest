@@ -8,7 +8,7 @@ import axios from 'axios'
 //     withCredentials: true
 // })
 const axiosInstence = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: 'https://echonest.onrender.com',
     withCredentials: true
 })
 
