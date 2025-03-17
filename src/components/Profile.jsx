@@ -138,9 +138,12 @@ const Profile = () => {
                   {data?.category}
                 </p>
                 <h1 className="text-xl md:text-3xl font-bold">{data?.title}</h1>
-                <p className="text-sm md:text-base text-gray-500 font-bold break-words">
-                  {truncateText(data?.content, 20)}
-                </p>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: truncateText(data?.content, 20),
+                  }}
+                  className="text-sm md:text-base text-gray-500 font-bold break-words"
+                ></div>
                 <div
                   id="Author"
                   className="flex justify-between items-center flex-wrap gap-2"

@@ -3,14 +3,14 @@ import axios from 'axios'
 // for the development
 
 
-const axiosInstence = axios.create({
-    baseURL: '/api',
-    withCredentials: true
-})
 // const axiosInstence = axios.create({
-//     baseURL: 'http://localhost:3000',
+//     baseURL: '/api',
 //     withCredentials: true
 // })
+const axiosInstence = axios.create({
+    baseURL: 'http://localhost:3000',
+    withCredentials: true
+})
 
 
 axiosInstence.interceptors.request.use(

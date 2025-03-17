@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,28 +10,30 @@ import AuthorCard from "./AuthorCard";
 import SearchComponent from "./SearchComponent";
 
 const Blogs = () => {
-  const [BlogData, setBlogData] = useState([]);  // Changed to array initialization
+  const [BlogData, setBlogData] = useState([]); // Changed to array initialization
   const [DataForCategory, setDataForCategory] = useState();
   const [categories, setcategories] = useState([]);
-  const [hasMore, setHasMore] = useState(true);  // New state to track if more data exists
+  const [hasMore, setHasMore] = useState(true); // New state to track if more data exists
   const dispatch = useDispatch();
   const { blogs } = useSelector((state) => state.blogs);
   const { loading } = useSelector((state) => state.loading);
   const { IsSearching } = useSelector((state) => state.config);
-  const [TopAuthors, setTopAuthors] = useState()
+  const [TopAuthors, setTopAuthors] = useState();
   const [page, setpage] = useState(1);
   const [limit, setlimit] = useState(6);
 
   const getData = async () => {
     try {
       dispatch(SetLoading(true));
-      const data = await axiosInstence.get(`/api/post/posts?page=${page}&limit=${limit}`);
+      const data = await axiosInstence.get(
+        `/api/post/posts?page=${page}&limit=${limit}`
+      );
       const dataForCategory = await axiosInstence.get("/api/post/posts");
       // console.log(dataForCategory)
-      let Category = dataForCategory?.data?.data?.map(
-        (data) => data.category
+      let Category = dataForCategory?.data?.data?.map((data) => data.category);
+      const UniqueCategory = Category.filter(
+        (str, index, arr) => arr.indexOf(str) === index
       );
-      const UniqueCategory = Category.filter((str, index, arr) => arr.indexOf(str) === index);
 
       //  console.log(UniqueCategory)
       await dispatch(addBlog(data?.data?.data));
@@ -48,22 +49,20 @@ const Blogs = () => {
   };
   const getTopUser = async () => {
     try {
-      const topUser = await axiosInstence.get(`/api/authours/top`)
-      if (topUser.statusText == 'OK') {
-        setTopAuthors(topUser.data)
+      const topUser = await axiosInstence.get(`/api/authours/top`);
+      if (topUser.statusText == "OK") {
+        setTopAuthors(topUser.data);
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
-
-
+  };
 
   // const getBlogByCategory = (category) => {
   //   // Reset pagination when filtering by category
   //   setpage(1);
   //   setHasMore(true);
-  //   setBlogData([]); 
+  //   setBlogData([]);
   //   if (category) {
   //     const data = blogs.filter((data, index) =>
   //       data?.category == category ? data : null
@@ -78,24 +77,23 @@ const Blogs = () => {
   // };
   const getBlogByCategory = (category) => {
     const data = blogs.filter((data, index) =>
-      data?.category == category ? data : null
+      data?.category.toLowerCase() == category.toLowerCase() ? data : null
     );
     // console.log(data)
     setBlogData(data);
   };
 
   const handleLoadMore = () => {
-    setpage(prev => prev + 1);
+    setpage((prev) => prev + 1);
   };
 
   useEffect(() => {
     getData();
   }, [page]);
   useEffect(() => {
-    getTopUser()
+    getTopUser();
     // console.log(TopAuthors)
-  }, [])
-  
+  }, []);
 
   return (
     <>
@@ -149,28 +147,33 @@ const Blogs = () => {
               />
             ))}
           </div>
-          
+
           {hasMore && !loading && (
-            <button 
+            <button
               onClick={handleLoadMore}
               className="flex justify-center font-medium hover:bg-black px-9 mt-6 border border-dark rounded-md py-2 px-7.5 hover:bg-dark hover:text-white ease-in duration-200 mx-auto mb-3"
             >
-              Load More
+              {page}
             </button>
           )}
 
           <div className="w-[90%] h-[90px] p-2 border-b flex justify-between items-end mx-1">
             <h1 className="text-[25px] font-bold">Top Authors</h1>
-            <h1 className="text-[17px]">All Authors <i className="ri-arrow-right-up-box-line"></i></h1>
+            <h1 className="text-[17px]">
+              All Authors <i className="ri-arrow-right-up-box-line"></i>
+            </h1>
           </div>
-          
+
           <div className="w-full h-auto mb-[30px] p-7 gap-6 justify-items-center flex flex-wrap justify-center">
-           
-           {
-            TopAuthors?.map((data)=>(
-              <AuthorCard _id={data?._id?._id} name={data?._id?.firstName + data?._id?.lastName} profilephoto={data?._id?.profileUrl} bioOrDesignation={data?._id?.bio} totalPosts={data?.postCount}/>
-            ))
-            }
+            {TopAuthors?.map((data) => (
+              <AuthorCard
+                _id={data?._id?._id}
+                name={data?._id?.firstName + data?._id?.lastName}
+                profilephoto={data?._id?.profileUrl}
+                bioOrDesignation={data?._id?.bio}
+                totalPosts={data?.postCount}
+              />
+            ))}
           </div>
         </div>
       )}
